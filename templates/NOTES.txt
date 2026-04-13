@@ -1,0 +1,36 @@
+Freqtrade release: {{ include "freqtrade.fullname" . }}
+
+Mode:
+  {{ .Values.mode.type }}
+
+Strategy delivery:
+  strategy.mode={{ .Values.strategy.mode }}
+  strategy.path={{ include "freqtrade.strategyPath" . }}
+
+freqUI:
+  enabled={{ include "freqtrade.ui.isEnabled" . }}
+
+Useful commands:
+  kubectl get pods -l app.kubernetes.io/instance={{ .Release.Name }}
+  kubectl logs -f {{ include "freqtrade.fullname" . }}{{ if eq (include "freqtrade.mode.isStateful" .) "true" }}-0{{ end }}
+
+Adding a new strategy:
+  1. Recommended: build a custom image with code under {{ include "freqtrade.strategyPath" . }}
+  2. Alternative: mount a PVC/CSI volume with strategy files and set strategy.mode=volume
+  3. Alternative: enable strategy.mode=initSync to pull strategies into {{ .Values.persistence.mountPath }}/strategies before startup
+
+{{- if and .Values.api.enabled .Values.service.enabled (eq (include "freqtrade.mode.isStateful" .) "true") }}
+API service:
+  kubectl port-forward svc/{{ include "freqtrade.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+{{- end }}
+{{- if .Values.ui.ingress.enabled }}
+UI ingress:
+  {{- range .Values.ui.ingress.hosts }}
+  https://{{ .host }}
+  {{- end }}
+{{- end }}
+{{- if eq .Values.mode.type "webserver" }}
+Graph data:
+  freqUI graph pages need OHLCV files under {{ .Values.persistence.mountPath }}/data.
+  Run a separate `downloadData` release against the same PVC to populate pair/timeframe data.
+{{- end }}

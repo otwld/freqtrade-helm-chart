@@ -1,0 +1,10 @@
+{{- include "freqtrade.validate" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "freqtrade.publicConfigName" . }}
+  labels:
+    {{- include "freqtrade.labels" . | nindent 4 }}
+data:
+  config.json: |
+{{ include "freqtrade.effectivePublicConfig" . | fromYaml | toPrettyJson | nindent 4 }}

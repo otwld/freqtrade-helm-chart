@@ -1,0 +1,7 @@
+apiVersion: v2
+name: freqtrade
+description: Production-ready Helm chart for running Freqtrade on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "stable"
+
