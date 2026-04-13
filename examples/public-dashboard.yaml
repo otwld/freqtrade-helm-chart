@@ -1,0 +1,46 @@
+dashboard:
+  enabled: true
+  ingress:
+    enabled: true
+    className: traefik
+    host: freqtrade.example.com
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+  config:
+    public:
+      timeframe: 15m
+      stake_currency: USDT
+      stake_amount: unlimited
+      dry_run_wallet: 1000
+      max_open_trades: 5
+      exchange:
+        name: binance
+        key: ""
+        secret: ""
+        ccxt_config: {}
+        ccxt_async_config: {}
+        pair_whitelist:
+          - BTC/USDT
+          - ETH/USDT
+        pair_blacklist: []
+      pairlists:
+        - method: StaticPairList
+    secret:
+      api_server:
+        username: dashboard
+        password: dashboard-password
+        jwt_secret_key: dashboard_jwt_secret_key_32_chars
+        ws_token: dashboard_ws_token_32_chars_min
+  dataJobs:
+    enabled: true
+    downloadData:
+      enabled: true
+      schedule: "0 */6 * * *"
+      pairs:
+        - BTC/USDT
+        - ETH/USDT
+      timeframes:
+        - 15m
+        - 1h
+
+bots: []

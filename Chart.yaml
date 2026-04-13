@@ -1,7 +1,16 @@
 apiVersion: v2
 name: freqtrade
-description: Production-ready Helm chart for running Freqtrade on Kubernetes
+description: Fleet-oriented Helm chart for running Freqtrade dashboards and trading bots on Kubernetes
 type: application
-version: 0.1.0
+version: 0.3.2
 appVersion: "stable"
-
+home: https://www.freqtrade.io/
+sources:
+  - https://github.com/freqtrade/freqtrade
+keywords:
+  - freqtrade
+  - crypto
+  - trading
+  - bot
+  - kubernetes
+  - helm

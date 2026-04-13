@@ -1,229 +1,218 @@
-# -- Override the chart name.
-nameOverride: ""
+# Global defaults applied to the dashboard and every bot unless overridden.
+global:
+  nameOverride: ""
+  fullnameOverride: ""
 
-# -- Override the fully-qualified release name.
-fullnameOverride: ""
-
-image:
-  repository: freqtradeorg/freqtrade
-  tag: stable
-  pullPolicy: IfNotPresent
-  pullSecrets: []
-
-# -- Override the image entrypoint. Leave empty to use the image default.
-command: []
-
-# -- Override generated args. Leave empty to use mode/strategy/config-driven args.
-args: []
-
-mode:
-  # -- Runtime mode. `trade`, `dryRun`, and `webserver` render a StatefulSet. Batch modes render a Job or CronJob.
-  # `downloadData` is the recommended companion mode for freqUI graph pages, using the same PVC as a webserver release.
-  type: trade
-  # -- Extra CLI args appended after generated mode/config/strategy args.
-  extraArgs: []
-  schedule:
-    enabled: false
-    cron: ""
-    timeZone: ""
-    concurrencyPolicy: Forbid
-    successfulJobsHistoryLimit: 1
-    failedJobsHistoryLimit: 3
-    startingDeadlineSeconds: null
-    suspend: false
-  job:
-    backoffLimit: 1
-    ttlSecondsAfterFinished: 86400
-    activeDeadlineSeconds: null
-
-strategy:
-  # -- Strategy class name. Required for trade, dryRun, backtest, and hyperopt.
-  name: SampleStrategy
-  # -- Explicit strategy path. If empty, the chart resolves a path based on `strategy.mode`.
-  path: ""
-  # -- Strategy delivery mode. `image` is recommended for production.
-  mode: image
   image:
-    # -- Strategy path inside a custom image. Falls back to `/freqtrade/user_data/strategies`.
-    bakedInPath: ""
-  volume:
-    existingClaim: ""
-    mountPath: /opt/freqtrade/strategies
-    accessModes:
-      - ReadWriteOnce
-    size: 1Gi
-    storageClassName: ""
+    repository: freqtradeorg/freqtrade
+    tag: stable
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+
+  serviceAccount:
+    create: false
+    name: ""
     annotations: {}
-  initSync:
+    automountToken: false
+
+  podSecurityContext:
+    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch
+
+  containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits: {}
+  podSecurityContext: {}
+  containerSecurityContext: {}
+
+  podAnnotations: {}
+  podLabels: {}
+
+  env: []
+  envFrom: []
+  initContainers: []
+  extraContainers: []
+  extraVolumes: []
+  extraVolumeMounts: []
+
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+
+  terminationGracePeriodSeconds: 60
+  lifecycle: {}
+
+  probes:
+    startup:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 30
+    readiness:
+      enabled: true
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+    liveness:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      timeoutSeconds: 5
+      failureThreshold: 6
+
+  networkPolicy:
     enabled: false
-    image:
-      repository: alpine/git
-      tag: "2.47.2"
-      pullPolicy: IfNotPresent
-    command:
-      - /bin/sh
-      - -ec
-      - |
-        test -n "${STRATEGY_GIT_URL:-}" || { echo "STRATEGY_GIT_URL is required"; exit 1; }
-        rm -rf /work/strategies
-        git clone --depth 1 "${STRATEGY_GIT_URL}" /work/strategies
-    env: []
-    envFrom: []
+    ingress:
+      from: []
+    egress:
+      allowDns: true
+      rules: []
 
-config:
-  # -- Non-sensitive Freqtrade config rendered into `config.json`.
-  public: {}
-  # -- Sensitive Freqtrade config rendered into `config-private.json` when no existing Secret is supplied.
-  sensitive: {}
-  # -- Existing Secret that contains `config-private.json`.
-  existingSecret: ""
-  # -- Secret key containing the private JSON config.
-  existingSecretKey: config-private.json
-  externalSecret:
-    enabled: false
-    refreshInterval: 1h
-    secretStoreRef:
-      kind: ClusterSecretStore
-      name: ""
-    target:
-      name: ""
-      creationPolicy: Owner
-      deletionPolicy: Retain
-    data: []
-    dataFrom: []
-
-api:
-  enabled: true
-  containerPort: 8080
-
-ui:
-  # -- Enable first-class freqUI support on top of the built-in API server.
+# Shared dashboard running `freqtrade webserver`.
+# This is analysis-first and does not automatically aggregate bot state unless
+# bot APIs are intentionally exposed and added to FreqUI.
+dashboard:
   enabled: false
-  # -- Allowed CORS origins for freqUI when it is served from a different origin than the API.
-  corsOrigins: []
+
+  image: {}
+  command: []
+  args: []
+  extraArgs: []
+
+  api:
+    enabled: true
+    port: 8080
+    corsOrigins: []
+
+  ui:
+    enabled: true
+
+  service:
+    type: ClusterIP
+    annotations: {}
+
   ingress:
     enabled: false
     className: ""
     annotations: {}
-    hosts:
-      - host: frequi.local
-        paths:
-          - path: /
-            pathType: Prefix
+    host: ""
+    path: /
+    pathType: Prefix
     tls: []
 
-service:
-  enabled: true
-  type: ClusterIP
-  port: 8080
-  annotations: {}
-  labels: {}
+  # Public settings become `/etc/freqtrade/config.json`.
+  # Secret settings become `/etc/freqtrade/config-private.json` unless an
+  # existing Secret or ExternalSecret is used instead.
+  config:
+    public: {}
+    secret: {}
+    existingSecret: ""
+    existingSecretKey: config-private.json
+    externalSecret:
+      enabled: false
+      refreshInterval: 1h
+      secretStoreRef:
+        name: ""
+        kind: ClusterSecretStore
+      target:
+        name: ""
+        creationPolicy: Owner
+      data: []
+      dataFrom: []
 
-persistence:
-  enabled: true
-  # -- Mount path for user_data. Share the same claim between `webserver` and `downloadData` releases to power freqUI graphs.
-  mountPath: /freqtrade/user_data
-  existingClaim: ""
-  accessModes:
-    - ReadWriteOnce
-  size: 20Gi
-  storageClassName: ""
-  annotations: {}
-
-resources:
-  requests:
-    cpu: 500m
-    memory: 1Gi
-  limits: {}
-
-podAnnotations: {}
-podLabels: {}
-
-podSecurityContext:
-  fsGroup: 1000
-  fsGroupChangePolicy: OnRootMismatch
-
-containerSecurityContext:
-  runAsUser: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
-  seccompProfile:
-    type: RuntimeDefault
-
-serviceAccount:
-  create: false
-  name: ""
-  annotations: {}
-  automountToken: false
-
-terminationGracePeriodSeconds: 60
-
-lifecycle: {}
-
-probes:
-  startup:
+  persistence:
     enabled: true
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 30
-  readiness:
-    enabled: true
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 6
-    successThreshold: 1
-  liveness:
-    enabled: true
-    initialDelaySeconds: 30
-    periodSeconds: 15
-    timeoutSeconds: 5
-    failureThreshold: 6
+    mountPath: /freqtrade/user_data
+    existingClaim: ""
+    accessModes:
+      - ReadWriteOnce
+    size: 20Gi
+    storageClassName: ""
+    annotations: {}
 
-# -- Direct environment variables for the main container.
-env: []
-# Example:
-#   - name: FREQTRADE__LOGGING__LEVEL
-#     value: INFO
+  resources: {}
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  podAnnotations: {}
+  podLabels: {}
+  env: []
+  envFrom: []
+  initContainers: []
+  extraContainers: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  terminationGracePeriodSeconds: null
+  lifecycle: {}
+  probes: {}
+  networkPolicy: {}
 
-# -- Environment sources for the main container.
-envFrom: []
-# Example:
-#   - secretRef:
-#       name: freqtrade-extra-env
+  dataJobs:
+    enabled: false
+    downloadData:
+      enabled: false
+      schedule: ""
+      successfulJobsHistoryLimit: 1
+      failedJobsHistoryLimit: 1
+      ttlSecondsAfterFinished: 86400
+      backoffLimit: 1
+      activeDeadlineSeconds: null
+      days: 14
+      erase: false
+      pairs: []
+      timeframes:
+        - 15m
+      extraArgs: []
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits: {}
 
-# -- User-supplied init containers appended after the strategy sync init container.
-initContainers: []
-
-# -- User-supplied sidecars or helper containers.
-extraContainers: []
-
-# -- Additional volumes merged into the pod spec.
-extraVolumes: []
-
-# -- Additional volume mounts merged into the main container.
-extraVolumeMounts: []
-
-nodeSelector: {}
-affinity: {}
-tolerations: []
-topologySpreadConstraints: []
-priorityClassName: ""
-
-networkPolicy:
-  enabled: false
-  ingress:
-    from: []
-  egress:
-    allowDns: true
-    rules: []
-
-observability:
-  # Freqtrade does not expose native Prometheus metrics.
-  # Use stdout logs, external checks on `/api/v1/ping`, or a sidecar/exporter if needed.
-  logToStdout: true
+# Independent trading bots. Each entry renders isolated resources named
+# `<release>-bot-<name>`.
+#
+# Required bot settings:
+# - `name`
+# - `mode`: `trade` or `dryRun`
+# - `strategy.name`
+# - `config.public.exchange.name`
+# - `config.public.stake_currency`
+# - `config.public.stake_amount`
+# - `config.public.timeframe`
+# - `config.public.pairlists`
+# - `config.public.entry_pricing`
+# - `config.public.exit_pricing`
+#
+# Secret handling:
+# - inline `config.secret`
+# - or `config.existingSecret`
+# - or `config.externalSecret`
+#
+# Strategy delivery:
+# - `strategy.source.type=image` for strategies baked into the image
+# - `strategy.source.type=volume` for a dedicated strategy PVC
+# - `strategy.source.type=initSync` to pull strategies before start
+bots: []

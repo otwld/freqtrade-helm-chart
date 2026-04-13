@@ -1,0 +1,55 @@
+bots:
+  - name: git-strategy
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: Ichi
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/davidzr/freqtrade-strategies.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/strategies/Ichi/Ichi.py /freqtrade/user_data/strategies/Ichi.py
+    api:
+      enabled: true
+    ui:
+      enabled: false
+    config:
+      public:
+        timeframe: 15m
+        stake_currency: USDT
+        stake_amount: unlimited
+        dry_run_wallet: 1000
+        max_open_trades: 5
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - ETH/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: git-strategy
+          password: git-strategy-password
+          jwt_secret_key: git_strategy_jwt_secret_key_32ch
+          ws_token: git_strategy_ws_token_32_chars

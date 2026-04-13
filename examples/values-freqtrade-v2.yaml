@@ -1,0 +1,746 @@
+global:
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+dashboard:
+  enabled: true
+  ingress:
+    enabled: true
+    className: traefik
+    host: dashboard.freqtrade-v2.local
+  config:
+    public:
+      timeframe: 15m
+      stake_currency: USDT
+      stake_amount: unlimited
+      dry_run_wallet: 1000
+      max_open_trades: 5
+      exchange:
+        name: binance
+        key: ""
+        secret: ""
+        ccxt_config: {}
+        ccxt_async_config: {}
+        pair_whitelist:
+          - BTC/USDT
+          - ETH/USDT
+        pair_blacklist: []
+      pairlists:
+        - method: StaticPairList
+    secret:
+      api_server:
+        username: dashboard
+        password: dashboard-password
+        jwt_secret_key: dashboardsecretkeydashboardsecret12
+        ws_token: dashboardwstoken_dashboardwstoken
+  dataJobs:
+    enabled: true
+    downloadData:
+      enabled: true
+      pairs:
+        - BTC/USDT
+        - ETH/USDT
+      timeframes:
+        - 15m
+
+bots:
+  - name: ichi
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: Ichi
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/davidzr/freqtrade-strategies.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/strategies/Ichi/Ichi.py /freqtrade/user_data/strategies/Ichi.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: ichi.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 15m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 5
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: freqtrade
+          password: fredtrade-test
+          jwt_secret_key: ichiapi_jwt_secret_key_32charsmin
+          ws_token: ichiapi_ws_token_32charsminimum
+
+  - name: babico
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: Babico_SMA5xBBmid
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/davidzr/freqtrade-strategies.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/strategies/Babico_SMA5xBBmid/Babico_SMA5xBBmid.py /freqtrade/user_data/strategies/Babico_SMA5xBBmid.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: babico.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 15m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 5
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: babico
+          password: babico-test
+          jwt_secret_key: babico_jwt_secret_key_32charsminimum
+          ws_token: babico_ws_token_32charsminimumxx
+
+  - name: nfi-x
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: NostalgiaForInfinityX
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/iterativv/NostalgiaForInfinity.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/NostalgiaForInfinityX.py /freqtrade/user_data/strategies/NostalgiaForInfinityX.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: nfi-x.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 5m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        use_exit_signal: true
+        exit_profit_only: false
+        ignore_roi_if_entry_signal: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 6
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: nfi-x
+          password: nfi-x-test
+          jwt_secret_key: nfi_x_jwt_secret_key_32charsminimum
+          ws_token: nfi_x_ws_token_32charsminimumxxxx
+
+  - name: nfi-x2
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: NostalgiaForInfinityX2
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/iterativv/NostalgiaForInfinity.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/NostalgiaForInfinityX2.py /freqtrade/user_data/strategies/NostalgiaForInfinityX2.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: nfi-x2.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 5m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        use_exit_signal: true
+        exit_profit_only: false
+        ignore_roi_if_entry_signal: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 6
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: nfi-x2
+          password: nfi-x2-test
+          jwt_secret_key: nfi_x2_jwt_secret_key_32charsminimum
+          ws_token: nfi_x2_ws_token_32charsminimumxxx
+
+  - name: nfi-x3
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: NostalgiaForInfinityX3
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/iterativv/NostalgiaForInfinity.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/NostalgiaForInfinityX3.py /freqtrade/user_data/strategies/NostalgiaForInfinityX3.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: nfi-x3.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 5m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        use_exit_signal: true
+        exit_profit_only: false
+        ignore_roi_if_entry_signal: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 6
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: nfi-x3
+          password: nfi-x3-test
+          jwt_secret_key: nfi_x3_jwt_secret_key_32charsminimum
+          ws_token: nfi_x3_ws_token_32charsminimumxxx
+
+  - name: nfi-x4
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: NostalgiaForInfinityX4
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/iterativv/NostalgiaForInfinity.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/NostalgiaForInfinityX4.py /freqtrade/user_data/strategies/NostalgiaForInfinityX4.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: nfi-x4.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 5m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        use_exit_signal: true
+        exit_profit_only: false
+        ignore_roi_if_entry_signal: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 6
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: nfi-x4
+          password: nfi-x4-test
+          jwt_secret_key: nfi_x4_jwt_secret_key_32charsminimum
+          ws_token: nfi_x4_ws_token_32charsminimumxxx
+
+  - name: nfi-x5
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: NostalgiaForInfinityX5
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/iterativv/NostalgiaForInfinity.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/NostalgiaForInfinityX5.py /freqtrade/user_data/strategies/NostalgiaForInfinityX5.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: nfi-x5.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 5m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        use_exit_signal: true
+        exit_profit_only: false
+        ignore_roi_if_entry_signal: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 6
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: nfi-x5
+          password: nfi-x5-test
+          jwt_secret_key: nfi_x5_jwt_secret_key_32charsminimum
+          ws_token: nfi_x5_ws_token_32charsminimumxxx
+
+  - name: nfi-x6
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: NostalgiaForInfinityX6
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/iterativv/NostalgiaForInfinity.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/NostalgiaForInfinityX6.py /freqtrade/user_data/strategies/NostalgiaForInfinityX6.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: nfi-x6.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 5m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        use_exit_signal: true
+        exit_profit_only: false
+        ignore_roi_if_entry_signal: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 6
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: nfi-x6
+          password: nfi-x6-test
+          jwt_secret_key: nfi_x6_jwt_secret_key_32charsminimum
+          ws_token: nfi_x6_ws_token_32charsminimumxxx
+
+  - name: nfi-x7
+    enabled: true
+    mode: dryRun
+    strategy:
+      name: NostalgiaForInfinityX7
+      source:
+        type: initSync
+        initSync:
+          enabled: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              rm -rf /tmp/src
+              git clone --depth 1 https://github.com/iterativv/NostalgiaForInfinity.git /tmp/src
+              mkdir -p /freqtrade/user_data/strategies
+              cp /tmp/src/NostalgiaForInfinityX7.py /freqtrade/user_data/strategies/NostalgiaForInfinityX7.py
+    ui:
+      enabled: true
+    ingress:
+      enabled: true
+      className: traefik
+      host: nfi-x7.freqtrade-v2.local
+    api:
+      enabled: true
+      corsOrigins:
+        - http://dashboard.freqtrade-v2.local
+    config:
+      public:
+        timeframe: 5m
+        tradable_balance_ratio: 0.99
+        fiat_display_currency: USD
+        stake_amount: unlimited
+        stake_currency: USDT
+        amend_last_stake_amount: true
+        use_exit_signal: true
+        exit_profit_only: false
+        ignore_roi_if_entry_signal: true
+        exchange:
+          name: binance
+          key: ""
+          secret: ""
+          ccxt_config: {}
+          ccxt_async_config: {}
+          pair_whitelist:
+            - BTC/USDT
+            - BCH/USDT
+            - ETH/USDT
+            - LINK/USDT
+            - LTC/USDT
+            - SOL/USDT
+            - BNB/USDT
+            - XRP/USDT
+            - ADA/USDT
+            - DOT/USDT
+            - ETC/USDT
+            - ALGO/USDT
+            - LUNA/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        dry_run_wallet: 100
+        max_open_trades: 6
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      secret:
+        api_server:
+          username: nfi-x7
+          password: nfi-x7-test
+          jwt_secret_key: nfi_x7_jwt_secret_key_32charsminimum
+          ws_token: nfi_x7_ws_token_32charsminimumxxx
