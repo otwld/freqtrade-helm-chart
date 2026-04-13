@@ -1,0 +1,52 @@
+mode:
+  type: dryRun
+
+strategy:
+  name: SampleStrategy
+  mode: image
+
+config:
+  public:
+    dry_run: true
+    db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
+    timeframe: 15m
+    exchange:
+      name: binance
+      key: ""
+      secret: ""
+      ccxt_config: {}
+      ccxt_async_config: {}
+      pair_whitelist:
+        - BTC/USDT
+      pair_blacklist: []
+    stake_currency: USDT
+    stake_amount: 50
+    api_server:
+      enabled: true
+      listen_ip_address: 0.0.0.0
+      listen_port: 8080
+      verbosity: error
+      enable_openapi: true
+  existingSecret: freqtrade-dev-private-config
+
+api:
+  enabled: true
+
+service:
+  enabled: true
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+env:
+  - name: FREQTRADE__LOGGING__LEVEL
+    value: DEBUG

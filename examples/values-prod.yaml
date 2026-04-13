@@ -1,0 +1,102 @@
+mode:
+  type: trade
+
+strategy:
+  name: CompanyMomentumStrategy
+  mode: image
+  image:
+    bakedInPath: /freqtrade/user_data/strategies
+
+config:
+  public:
+    dry_run: false
+    db_url: sqlite:////freqtrade/user_data/tradesv3.sqlite
+    timeframe: 15m
+    exchange:
+      name: binance
+      ccxt_config: {}
+      ccxt_async_config: {}
+      pair_whitelist:
+        - BTC/USDT
+        - ETH/USDT
+      pair_blacklist: []
+    stake_currency: USDT
+    stake_amount: unlimited
+    max_open_trades: 5
+    api_server:
+      enabled: true
+      listen_ip_address: 0.0.0.0
+      listen_port: 8080
+      verbosity: error
+      enable_openapi: false
+  existingSecret: freqtrade-private-config
+
+api:
+  enabled: true
+
+ui:
+  enabled: true
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/auth-url: https://auth.example.com/oauth2/auth
+      nginx.ingress.kubernetes.io/auth-signin: https://auth.example.com/oauth2/start?rd=$escaped_request_uri
+      nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    hosts:
+      - host: freqtrade.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: freqtrade-tls
+        hosts:
+          - freqtrade.example.com
+
+service:
+  enabled: true
+
+persistence:
+  enabled: true
+  existingClaim: freqtrade-user-data
+
+resources:
+  requests:
+    cpu: 1000m
+    memory: 2Gi
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: freqtrade
+          topologyKey: kubernetes.io/hostname
+
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: freqtrade
+
+networkPolicy:
+  enabled: true
+  ingress:
+    from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: ingress-nginx
+  egress:
+    allowDns: true
+    rules:
+      - to:
+          - ipBlock:
+              cidr: 0.0.0.0/0

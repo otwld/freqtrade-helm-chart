@@ -1,0 +1,102 @@
+mode:
+  type: dryRun
+
+strategy:
+  name: Ichi
+  mode: initSync
+  initSync:
+    enabled: true
+    env:
+      - name: STRATEGY_GIT_URL
+        value: https://github.com/davidzr/freqtrade-strategies.git
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        test -n "${STRATEGY_GIT_URL:-}" || { echo "STRATEGY_GIT_URL is required"; exit 1; }
+        rm -rf /tmp/src /work/strategies
+        git clone --depth 1 "${STRATEGY_GIT_URL}" /tmp/src
+        mkdir -p /work/strategies
+        cp /tmp/src/strategies/Ichi/Ichi.py /work/strategies/Ichi.py
+
+config:
+  public:
+    dry_run: true
+    timeframe: 15m
+    tradable_balance_ratio: 0.99
+    fiat_display_currency: USD
+    dry_run_wallet: 100
+    db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
+    max_open_trades: 5
+    stake_currency: USDT
+    stake_amount: unlimited
+    amend_last_stake_amount: true
+    exchange:
+      name: binance
+      key: ""
+      secret: ""
+      ccxt_config: {}
+      ccxt_async_config: {}
+      pair_whitelist:
+        - BTC/USDT
+        - BCH/USDT
+        - ETH/USDT
+        - LINK/USDT
+        - LTC/USDT
+        - SOL/USDT
+        - BNB/USDT
+        - XRP/USDT
+        - ADA/USDT
+        - DOT/USDT
+        - ETC/USDT
+        - ALGO/USDT
+        - LUNA/USDT
+      pair_blacklist: []
+    pairlists:
+      - method: StaticPairList
+    entry_pricing:
+      price_side: same
+      use_order_book: true
+      order_book_top: 1
+    exit_pricing:
+      price_side: same
+      use_order_book: true
+      order_book_top: 1
+    api_server:
+      enabled: true
+      listen_ip_address: 0.0.0.0
+      listen_port: 8080
+      verbosity: error
+  sensitive:
+    api_server:
+      username: freqtrade
+      password: fredtrade-test
+      jwt_secret_key: fredtrade-jwt-secret
+      ws_token: fredtrade-ws-token
+
+api:
+  enabled: true
+
+ui:
+  enabled: true
+  corsOrigins:
+    - https://freqtrade.otwld.com
+
+service:
+  enabled: true
+
+networkPolicy:
+  enabled: false
+
+persistence:
+  enabled: true
+  size: 5Gi
+  storageClassName: longhorn
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
