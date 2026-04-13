@@ -1,165 +1,356 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
   "type": "object",
-  "additionalProperties": true,
+  "additionalProperties": false,
   "properties": {
-    "mode": {
+    "global": {
       "type": "object",
       "additionalProperties": true,
+      "properties": {
+        "nameOverride": { "type": "string", "description": "Override the chart name used in generated resource names." },
+        "fullnameOverride": { "type": "string", "description": "Override the fully-qualified release name used in generated resource names." },
+        "image": { "$ref": "#/definitions/image" },
+        "serviceAccount": { "$ref": "#/definitions/serviceAccount" },
+        "podSecurityContext": { "type": "object" },
+        "containerSecurityContext": { "type": "object" },
+        "resources": { "type": "object" },
+        "podAnnotations": { "type": "object" },
+        "podLabels": { "type": "object" },
+        "env": { "type": "array" },
+        "envFrom": { "type": "array" },
+        "initContainers": { "type": "array" },
+        "extraContainers": { "type": "array" },
+        "extraVolumes": { "type": "array" },
+        "extraVolumeMounts": { "type": "array" },
+        "nodeSelector": { "type": "object" },
+        "affinity": { "type": "object" },
+        "tolerations": { "type": "array" },
+        "topologySpreadConstraints": { "type": "array" },
+        "priorityClassName": { "type": "string" },
+        "terminationGracePeriodSeconds": { "type": "integer", "minimum": 0 },
+        "lifecycle": { "type": "object" },
+        "probes": { "$ref": "#/definitions/probes" },
+        "networkPolicy": { "$ref": "#/definitions/networkPolicy" }
+      }
+    },
+    "dashboard": { "$ref": "#/definitions/dashboard" },
+    "bots": {
+      "type": "array",
+      "default": [],
+      "items": { "$ref": "#/definitions/bot" }
+    }
+  },
+  "definitions": {
+    "image": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "repository": { "type": "string" },
+        "tag": { "type": "string" },
+        "pullPolicy": { "type": "string" },
+        "pullSecrets": { "type": "array" }
+      }
+    },
+    "serviceAccount": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "create": { "type": "boolean" },
+        "name": { "type": "string" },
+        "annotations": { "type": "object" },
+        "automountToken": { "type": "boolean" }
+      }
+    },
+    "probes": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "startup": { "type": "object" },
+        "readiness": { "type": "object" },
+        "liveness": { "type": "object" }
+      }
+    },
+    "networkPolicy": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "ingress": { "type": "object" },
+        "egress": { "type": "object" }
+      }
+    },
+    "api": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "corsOrigins": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["trade", "dryRun", "webserver", "backtest", "hyperopt", "downloadData"]
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer"]
         },
-        "extraArgs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "schedule": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            },
-            "cron": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "required": ["type"]
+        "annotations": { "type": "object" }
+      }
     },
-    "strategy": {
+    "ingress": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
-        "name": {
-          "type": "string"
+        "enabled": { "type": "boolean" },
+        "className": { "type": "string" },
+        "annotations": { "type": "object" },
+        "host": { "type": "string" },
+        "path": { "type": "string" },
+        "pathType": {
+          "type": "string",
+          "enum": ["ImplementationSpecific", "Exact", "Prefix"]
         },
-        "mode": {
+        "tls": { "type": "array" }
+      }
+    },
+    "strategySource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
           "type": "string",
           "enum": ["image", "volume", "initSync"]
         },
+        "path": { "type": "string" },
+        "volume": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "existingClaim": { "type": "string" },
+            "mountPath": { "type": "string" },
+            "accessModes": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "size": { "type": "string" },
+            "storageClassName": { "type": "string" },
+            "annotations": { "type": "object" }
+          }
+        },
         "initSync": {
           "type": "object",
-          "additionalProperties": true,
+          "additionalProperties": false,
           "properties": {
-            "enabled": {
-              "type": "boolean"
-            }
+            "enabled": { "type": "boolean" },
+            "image": { "$ref": "#/definitions/image" },
+            "command": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "env": { "type": "array" },
+            "envFrom": { "type": "array" }
           }
         }
-      },
-      "required": ["mode"]
+      }
     },
     "config": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
-        "public": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "timeframe": {
-              "type": "string"
-            },
-            "stake_currency": {
-              "type": "string"
-            },
-            "stake_amount": {},
-            "exchange": {
-              "type": "object",
-              "additionalProperties": true,
-              "properties": {
-                "name": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "existingSecret": {
-          "type": "string"
-        },
-        "existingSecretKey": {
-          "type": "string"
-        },
+        "public": { "type": "object" },
+        "secret": { "type": "object" },
+        "existingSecret": { "type": "string" },
+        "existingSecretKey": { "type": "string" },
         "externalSecret": {
           "type": "object",
-          "additionalProperties": true,
+          "additionalProperties": false,
           "properties": {
-            "enabled": {
-              "type": "boolean"
+            "enabled": { "type": "boolean" },
+            "refreshInterval": { "type": "string" },
+            "secretStoreRef": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": { "type": "string" },
+                "kind": { "type": "string" }
+              }
             },
             "target": {
               "type": "object",
-              "additionalProperties": true,
+              "additionalProperties": false,
               "properties": {
-                "name": {
-                  "type": "string"
-                }
+                "name": { "type": "string" },
+                "creationPolicy": { "type": "string" }
               }
-            }
+            },
+            "data": { "type": "array" },
+            "dataFrom": { "type": "array" }
           }
         }
       }
     },
     "persistence": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "mountPath": {
-          "type": "string"
-        }
-      }
-    },
-    "api": {
-      "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        }
-      }
-    },
-    "ui": {
-      "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "corsOrigins": {
+        "enabled": { "type": "boolean" },
+        "mountPath": { "type": "string" },
+        "existingClaim": { "type": "string" },
+        "accessModes": {
           "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "items": { "type": "string" }
         },
-        "ingress": {
+        "size": { "type": "string" },
+        "storageClassName": { "type": "string" },
+        "annotations": { "type": "object" }
+      }
+    },
+    "instanceBase": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "image": { "$ref": "#/definitions/image" },
+        "command": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "args": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "extraArgs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "api": { "$ref": "#/definitions/api" },
+        "ui": { "$ref": "#/definitions/ui" },
+        "service": { "$ref": "#/definitions/service" },
+        "ingress": { "$ref": "#/definitions/ingress" },
+        "config": { "$ref": "#/definitions/config" },
+        "persistence": { "$ref": "#/definitions/persistence" },
+        "podSecurityContext": { "type": "object" },
+        "containerSecurityContext": { "type": "object" },
+        "resources": { "type": "object" },
+        "podAnnotations": { "type": "object" },
+        "podLabels": { "type": "object" },
+        "env": { "type": "array" },
+        "envFrom": { "type": "array" },
+        "initContainers": { "type": "array" },
+        "extraContainers": { "type": "array" },
+        "extraVolumes": { "type": "array" },
+        "extraVolumeMounts": { "type": "array" },
+        "nodeSelector": { "type": "object" },
+        "affinity": { "type": "object" },
+        "tolerations": { "type": "array" },
+        "topologySpreadConstraints": { "type": "array" },
+        "priorityClassName": { "type": "string" },
+        "terminationGracePeriodSeconds": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "lifecycle": { "type": "object" },
+        "probes": { "$ref": "#/definitions/probes" },
+        "networkPolicy": { "$ref": "#/definitions/networkPolicy" }
+      }
+    },
+    "dashboard": {
+      "allOf": [
+        { "$ref": "#/definitions/instanceBase" },
+        {
           "type": "object",
           "additionalProperties": true,
           "properties": {
-            "enabled": {
-              "type": "boolean"
+            "dataJobs": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "downloadData": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "enabled": { "type": "boolean" },
+                    "schedule": { "type": "string" },
+                    "successfulJobsHistoryLimit": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "failedJobsHistoryLimit": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "ttlSecondsAfterFinished": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "backoffLimit": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "activeDeadlineSeconds": {
+                      "type": ["integer", "null"],
+                      "minimum": 1
+                    },
+                    "days": { "type": "integer", "minimum": 1 },
+                    "erase": { "type": "boolean" },
+                    "pairs": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "timeframes": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "extraArgs": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "resources": { "type": "object" }
+                  }
+                }
+              }
             }
           }
         }
-      }
+      ]
     },
-    "service": {
-      "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "enabled": {
-          "type": "boolean"
+    "bot": {
+      "allOf": [
+        { "$ref": "#/definitions/instanceBase" },
+        {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "mode": {
+              "type": "string",
+              "enum": ["trade", "dryRun"]
+            },
+            "strategy": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": { "type": "string" },
+                "source": { "$ref": "#/definitions/strategySource" }
+              }
+            }
+          },
+          "required": ["name"]
         }
-      }
+      ]
     }
   }
 }
