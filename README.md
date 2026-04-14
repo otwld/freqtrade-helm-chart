@@ -71,6 +71,7 @@ The main `values.yaml` is intentionally comment-heavy and example-light. Curated
 Curated examples shipped with the chart:
 
 - [`examples/minimal.yaml`](examples/minimal.yaml)
+- [`examples/bot-with-telegram.yaml`](examples/bot-with-telegram.yaml)
 - [`examples/dashboard-and-bots.yaml`](examples/dashboard-and-bots.yaml)
 - [`examples/private-bot-ui.yaml`](examples/private-bot-ui.yaml)
 - [`examples/public-dashboard.yaml`](examples/public-dashboard.yaml)
@@ -92,6 +93,33 @@ helm upgrade --install freqtrade-v2 projects/charts/freqtrade \
 ```
 
 If Helm release metadata is unhealthy, use the recovery runbook in [docs/operations.md](docs/operations.md).
+
+## Telegram
+
+Telegram is configured per bot through `bots[].telegram`.
+
+- Required when enabled:
+  - `telegram.token`
+  - `telegram.chatId`
+- Optional upstream-aligned fields:
+  - `topicId`
+  - `authorizedUsers`
+  - `allowCustomMessages`
+  - `reload`
+  - `balanceDustLevel`
+  - `notificationSettings`
+  - `keyboard`
+
+The chart renders Telegram as a dedicated secret-backed config overlay, so `token` and `chatId` stay out of `config.public`.
+
+Use the focused example:
+
+- [`examples/bot-with-telegram.yaml`](examples/bot-with-telegram.yaml)
+
+Official Freqtrade references:
+
+- https://www.freqtrade.io/en/stable/telegram-usage/
+- https://www.freqtrade.io/en/stable/configuration/
 
 ## Security Notes
 

@@ -112,6 +112,17 @@ strategy:
       command: []
       env: []
       envFrom: []
+telegram:
+  enabled: false
+  token: ""
+  chatId: ""
+  topicId: ""
+  authorizedUsers: []
+  allowCustomMessages: null
+  reload: null
+  balanceDustLevel: null
+  notificationSettings: {}
+  keyboard: []
 config:
   public: {}
   secret: {}
@@ -237,6 +248,45 @@ Config resource names.
 {{- if or .instance.config.existingSecret .instance.config.externalSecret.enabled (not (empty (.instance.config.secret | default dict))) -}}true{{- else -}}false{{- end -}}
 {{- end -}}
 
+{{- define "freqtrade.instance.telegramEnabled" -}}
+{{- $telegram := .instance.telegram | default dict -}}
+{{- if and (eq .instance._component "bot") ($telegram.enabled | default false) -}}true{{- else -}}false{{- end -}}
+{{- end -}}
+
+{{- define "freqtrade.instance.telegramSecretName" -}}
+{{- printf "%s-telegram-config" (include "freqtrade.instance.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Telegram config rendered as a dedicated secret-backed overlay file.
+*/}}
+{{- define "freqtrade.instance.telegramConfig" -}}
+{{- $telegramValues := .instance.telegram | default dict -}}
+{{- $telegram := dict "enabled" true "token" $telegramValues.token "chat_id" $telegramValues.chatId -}}
+{{- if $telegramValues.topicId -}}
+  {{- $_ := set $telegram "topic_id" $telegramValues.topicId -}}
+{{- end -}}
+{{- if $telegramValues.authorizedUsers -}}
+  {{- $_ := set $telegram "authorized_users" $telegramValues.authorizedUsers -}}
+{{- end -}}
+{{- if hasKey $telegramValues "allowCustomMessages" -}}
+  {{- $_ := set $telegram "allow_custom_messages" $telegramValues.allowCustomMessages -}}
+{{- end -}}
+{{- if hasKey $telegramValues "reload" -}}
+  {{- $_ := set $telegram "reload" $telegramValues.reload -}}
+{{- end -}}
+{{- if hasKey $telegramValues "balanceDustLevel" -}}
+  {{- $_ := set $telegram "balance_dust_level" $telegramValues.balanceDustLevel -}}
+{{- end -}}
+{{- if $telegramValues.notificationSettings -}}
+  {{- $_ := set $telegram "notification_settings" $telegramValues.notificationSettings -}}
+{{- end -}}
+{{- if $telegramValues.keyboard -}}
+  {{- $_ := set $telegram "keyboard" $telegramValues.keyboard -}}
+{{- end -}}
+{{- dict "telegram" $telegram | toYaml -}}
+{{- end -}}
+
 {{/*
 PVC names.
 */}}
@@ -321,6 +371,10 @@ Container args.
 - --config
 - /etc/freqtrade/config-private.json
 {{- end }}
+{{- if eq (include "freqtrade.instance.telegramEnabled" .) "true" }}
+- --config
+- /etc/freqtrade/config-telegram.json
+{{- end }}
 {{- if eq (include "freqtrade.instance.requiresStrategy" .) "true" }}
 - --strategy
 - {{ required (printf "strategy.name is required for bot %s" .instance._name) .instance.strategy.name | quote }}
@@ -344,6 +398,9 @@ Merged pod annotations with config checksums.
   {{- $_ := set $annotations "checksum/private-config" (include "freqtrade.instance.privateConfigSecretName" . | sha256sum) -}}
 {{- else -}}
   {{- $_ := set $annotations "checksum/private-config" ((toYaml (.instance.config.secret | default dict)) | sha256sum) -}}
+{{- end -}}
+{{- if eq (include "freqtrade.instance.telegramEnabled" .) "true" -}}
+  {{- $_ := set $annotations "checksum/telegram-config" (include "freqtrade.instance.telegramConfig" . | sha256sum) -}}
 {{- end -}}
 {{- if eq .instance.strategy.source.type "initSync" -}}
   {{- $_ := set $annotations "checksum/strategy-sync" ((toYaml .instance.strategy.source.initSync) | sha256sum) -}}
@@ -396,6 +453,12 @@ Main container volume mounts.
   subPath: {{ default "config-private.json" .instance.config.existingSecretKey }}
   readOnly: true
 {{- end }}
+{{- if eq (include "freqtrade.instance.telegramEnabled" .) "true" }}
+- name: telegram-config
+  mountPath: /etc/freqtrade/config-telegram.json
+  subPath: config-telegram.json
+  readOnly: true
+{{- end }}
 - name: user-data
   mountPath: {{ .instance.persistence.mountPath }}
 {{- if eq .instance.strategy.source.type "volume" }}
@@ -418,6 +481,11 @@ Pod volumes.
 - name: private-config
   secret:
     secretName: {{ include "freqtrade.instance.privateConfigSecretName" . }}
+{{- end }}
+{{- if eq (include "freqtrade.instance.telegramEnabled" .) "true" }}
+- name: telegram-config
+  secret:
+    secretName: {{ include "freqtrade.instance.telegramSecretName" . }}
 {{- end }}
 - name: user-data
   {{- if .instance.persistence.enabled }}
@@ -478,9 +546,11 @@ Validate one instance.
 {{- $instance := .instance -}}
 {{- $privateConfigRef := or $instance.config.existingSecret $instance.config.externalSecret.enabled -}}
 {{- $public := $instance.config.public | default dict -}}
+{{- $private := $instance.config.secret | default dict -}}
 {{- $exchange := (get $public "exchange") | default dict -}}
 {{- $pairlists := (get $public "pairlists") | default list -}}
-{{- $secretApi := (get ($instance.config.secret | default dict) "api_server") | default dict -}}
+{{- $secretApi := (get $private "api_server") | default dict -}}
+{{- $telegram := $instance.telegram | default dict -}}
 {{- if and $instance.config.existingSecret $instance.config.externalSecret.enabled -}}
 {{- fail (printf "%s: config.existingSecret and config.externalSecret.enabled are mutually exclusive" $instance._name) -}}
 {{- end -}}
@@ -494,12 +564,29 @@ Validate one instance.
   {{- if not $instance.api.enabled -}}
     {{- fail "dashboard.api.enabled must be true when dashboard.enabled=true" -}}
   {{- end -}}
+  {{- if ($telegram.enabled | default false) -}}
+    {{- fail "dashboard.telegram.enabled is not supported; configure Telegram on bots only" -}}
+  {{- end -}}
 {{- else -}}
   {{- if and (ne $instance.mode "trade") (ne $instance.mode "dryRun") -}}
     {{- fail (printf "bot %s: mode must be trade or dryRun" $instance._name) -}}
   {{- end -}}
   {{- if not $instance.strategy.name -}}
     {{- fail (printf "bot %s: strategy.name is required" $instance._name) -}}
+  {{- end -}}
+  {{- if ($telegram.enabled | default false) -}}
+    {{- if hasKey $public "telegram" -}}
+      {{- fail (printf "bot %s: telegram.enabled cannot be combined with config.public.telegram" $instance._name) -}}
+    {{- end -}}
+    {{- if hasKey $private "telegram" -}}
+      {{- fail (printf "bot %s: telegram.enabled cannot be combined with config.secret.telegram" $instance._name) -}}
+    {{- end -}}
+    {{- if not $telegram.token -}}
+      {{- fail (printf "bot %s: telegram.token is required when telegram.enabled=true" $instance._name) -}}
+    {{- end -}}
+    {{- if not $telegram.chatId -}}
+      {{- fail (printf "bot %s: telegram.chatId is required when telegram.enabled=true" $instance._name) -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 {{- if and $instance.ui.enabled (not $instance.api.enabled) -}}
