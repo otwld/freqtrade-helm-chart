@@ -10,6 +10,10 @@ The chart ships curated examples for common patterns. They are designed to be sm
 
 One bot, no ingress, API enabled. Best starting point for local development and port-forward access.
 
+### `examples/bot-with-telegram.yaml`
+
+One bot with Telegram enabled through the chart-managed `bots[].telegram` block.
+
 ### `examples/dashboard-and-bots.yaml`
 
 Shared dashboard plus multiple bots. Good reference for a small fleet.

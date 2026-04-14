@@ -201,6 +201,57 @@
         }
       }
     },
+    "telegram": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable Telegram notifications and commands for this bot."
+        },
+        "token": {
+          "type": "string",
+          "description": "Telegram bot token from BotFather."
+        },
+        "chatId": {
+          "type": "string",
+          "description": "Telegram chat identifier receiving bot notifications."
+        },
+        "topicId": {
+          "type": "string",
+          "description": "Optional Telegram forum topic/thread identifier."
+        },
+        "authorizedUsers": {
+          "type": "array",
+          "description": "Optional list of Telegram usernames authorized to control the bot in group chats.",
+          "items": { "type": "string" }
+        },
+        "allowCustomMessages": {
+          "type": ["boolean", "null"],
+          "description": "Allow strategy-originated Telegram messages."
+        },
+        "reload": {
+          "type": ["boolean", "null"],
+          "description": "Enable reload buttons on Telegram notifications."
+        },
+        "balanceDustLevel": {
+          "type": ["number", "null"],
+          "description": "Hide balances below this threshold from /balance output."
+        },
+        "notificationSettings": {
+          "type": "object",
+          "description": "Pass-through dictionary for official Freqtrade telegram.notification_settings."
+        },
+        "keyboard": {
+          "type": "array",
+          "description": "Optional custom Telegram keyboard layout.",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
     "persistence": {
       "type": "object",
       "additionalProperties": false,
@@ -221,7 +272,10 @@
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "enabled": { "type": "boolean" },
+        "enabled": {
+          "type": "boolean",
+          "description": "Render this instance when true. Bots default to enabled when omitted."
+        },
         "image": { "$ref": "#/definitions/image" },
         "command": {
           "type": "array",
@@ -339,6 +393,7 @@
               "type": "string",
               "enum": ["trade", "dryRun"]
             },
+            "telegram": { "$ref": "#/definitions/telegram" },
             "strategy": {
               "type": "object",
               "additionalProperties": false,

@@ -35,8 +35,6 @@ global:
       cpu: 250m
       memory: 512Mi
     limits: {}
-  podSecurityContext: {}
-  containerSecurityContext: {}
 
   podAnnotations: {}
   podLabels: {}
@@ -195,6 +193,7 @@ dashboard:
 # `<release>-bot-<name>`.
 #
 # Required bot settings:
+# - `enabled`: optional, defaults to `true`
 # - `name`
 # - `mode`: `trade` or `dryRun`
 # - `strategy.name`
@@ -215,4 +214,40 @@ dashboard:
 # - `strategy.source.type=image` for strategies baked into the image
 # - `strategy.source.type=volume` for a dedicated strategy PVC
 # - `strategy.source.type=initSync` to pull strategies before start
+#
+# Telegram:
+# - Telegram is configured per bot, not on the shared dashboard
+# - Set `telegram.enabled=true` and provide at least `token` and `chatId`
+# - `topicId` and `authorizedUsers` are useful when using group chats
+# - `notificationSettings` is passed through to Freqtrade as-is
+# - Do not also define `config.public.telegram` or `config.secret.telegram`
+#   when using the chart-managed `telegram` block
+# - Keep `token` and `chatId` in a secure values file or secret-management flow
+#
+# Minimal bot example:
+# bots:
+#   - name: sample
+#     enabled: true
+#     mode: dryRun
+#     strategy:
+#       name: SampleStrategy
+#       source:
+#         type: image
+#     telegram:
+#       enabled: true
+#       token: "123456:bot-token"
+#       chatId: "123456789"
+#       topicId: ""
+#       authorizedUsers: []
+#       allowCustomMessages: true
+#       reload: true
+#       balanceDustLevel: 0.01
+#       notificationSettings:
+#         status: silent
+#         warning: on
+#         startup: off
+#         entry: silent
+#         exit:
+#           "*": off
+#           roi: silent
 bots: []

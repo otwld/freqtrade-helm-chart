@@ -5,6 +5,7 @@ Render all core resources for one normalized instance.
 {{- $parts := list
   (include "freqtrade.instance.configmap" .)
   (include "freqtrade.instance.secret" .)
+  (include "freqtrade.instance.telegramSecret" .)
   (include "freqtrade.instance.externalSecret" .)
   (include "freqtrade.instance.userDataPvc" .)
   (include "freqtrade.instance.strategyPvc" .)
@@ -49,6 +50,22 @@ type: Opaque
 stringData:
   {{ default "config-private.json" .instance.config.existingSecretKey }}: |
     {{- (.instance.config.secret | default dict) | toPrettyJson | nindent 4 }}
+{{- end -}}
+{{- end -}}
+
+{{- define "freqtrade.instance.telegramSecret" -}}
+{{- if eq (include "freqtrade.instance.telegramEnabled" .) "true" -}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "freqtrade.instance.telegramSecretName" . }}
+  labels:
+    {{- include "freqtrade.commonLabels" . | nindent 4 }}
+type: Opaque
+stringData:
+  config-telegram.json: |
+    {{- (include "freqtrade.instance.telegramConfig" . | fromYaml) | toPrettyJson | nindent 4 }}
 {{- end -}}
 {{- end -}}
 
