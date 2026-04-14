@@ -1,6 +1,6 @@
 # Docs
 
-The handbook moved to wiki-style pages so it can be copied directly into a GitHub wiki.
+The handbook lives in markdown files under `docs/` and is intended to be read directly in the repository.
 
 - [Home](home.md)
 - [Architecture](architecture.md)

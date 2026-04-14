@@ -1,7 +1,0 @@
-- [Home](home)
-- [Architecture](architecture)
-- [Installation and Upgrades](installation_and_upgrades)
-- [Examples](examples)
-- [Operations](operations)
-- [Releases and CI](releases_and_ci)
-- [Troubleshooting](troubleshooting)

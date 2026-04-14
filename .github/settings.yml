@@ -2,7 +2,6 @@ repository:
   name: freqtrade-helm-chart
   description: "Production-grade Helm chart for running Freqtrade dashboards and multi-bot fleets on Kubernetes."
   homepage: "https://www.freqtrade.io/"
-  has_wiki: true
   has_issues: true
   has_projects: false
   has_downloads: true

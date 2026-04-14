@@ -59,16 +59,7 @@ The repository metadata lives in `.github/settings.yml`:
 
 - description
 - homepage
-- wiki enablement
 - topics
 - default branch
 
 If your GitHub organization uses a settings-sync app, that file becomes the source of truth for repo metadata as well.
-
-## Wiki export
-
-The repository remains the source of truth for docs. To copy wiki-ready pages into a cloned GitHub wiki repository:
-
-```bash
-./scripts/export-wiki.sh ../freqtrade-helm-chart.wiki
-```

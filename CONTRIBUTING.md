@@ -14,11 +14,6 @@ helm package . --destination /tmp
 
 - Keep the repo docs as the source of truth
 - Update the matching page under `docs/` when behavior or values change
-- If you maintain the GitHub wiki, export the docs with:
-
-```bash
-./scripts/export-wiki.sh /path/to/freqtrade-helm-chart.wiki
-```
 
 ## Releases
 

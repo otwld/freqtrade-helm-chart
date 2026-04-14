@@ -1,4 +1,4 @@
-# Freqtrade Helm Chart Wiki
+# Freqtrade Helm Chart Docs
 
 ## Navigation
 
@@ -22,13 +22,7 @@ The chart intentionally does not model a privileged root bot. That keeps the pub
 
 ## Documentation source of truth
 
-The repository is the source of truth for these docs. If you maintain a GitHub wiki, copy or export the pages in this directory into the wiki repository with:
-
-```bash
-./scripts/export-wiki.sh /path/to/freqtrade-helm-chart.wiki
-```
-
-The generated values reference stays in [README.md](../README.md#values) so it can be refreshed automatically from `values.yaml`.
+The repository is the source of truth for these docs. The generated values reference stays in [README.md](../README.md#values) so it can be refreshed automatically from `values.yaml`.
 
 ## Recommended reading order
 

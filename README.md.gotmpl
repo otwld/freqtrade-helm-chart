@@ -78,12 +78,6 @@ helm upgrade --install freqtrade . \
 - [Releases and CI](docs/releases_and_ci.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
-To export the handbook into a checked-out GitHub wiki repository:
-
-```bash
-./scripts/export-wiki.sh /path/to/freqtrade-helm-chart.wiki
-```
-
 ## Telegram
 
 Telegram is configured per bot through `bots[].telegram`.
