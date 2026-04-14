@@ -6,29 +6,15 @@
 - [Installation and Upgrades](Installation-and-Upgrades.md)
 - [Operations](Operations.md)
 
-## CI workflow
+## Workflow overview
 
-The repository ships two GitHub Actions workflows:
+The repository ships three GitHub Actions workflows:
 
-- `CI`
-  - runs `./scripts/generate-docs.sh`
-  - verifies `README.md` is current
-  - runs `helm lint .`
-  - runs `./scripts/lint-examples.sh .`
-  - packages the chart as an artifact
-- `Release Readiness`
-  - runs `./scripts/generate-docs.sh`
-  - verifies `README.md` is current
-  - validates chart metadata
-  - validates tag-to-chart version alignment
-  - lints and renders examples
-  - packages the chart and uploads the archive as an artifact
-- `Publish Chart`
-  - runs on version tags and manual dispatch
-  - reruns validation and packaging
-  - publishes release assets with `chart-releaser`
-  - updates the repository chart index
-  - mirrors the chart sources into the central `helm-charts` repository used by `https://helm.otwld.com/`
+| Workflow | Purpose |
+|----------|---------|
+| `CI` | Regenerate README, lint the chart, lint all examples, and package the chart |
+| `Release Readiness` | Re-validate tagged builds and ensure tag-to-chart-version alignment |
+| `Publish Chart` | Publish release assets and mirror the chart into the central `helm-charts` repo backing `https://helm.otwld.com/` |
 
 The published install path for consumers is:
 

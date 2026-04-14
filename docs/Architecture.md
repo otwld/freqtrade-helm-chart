@@ -7,12 +7,15 @@
 - [Operations](Operations.md)
 - [Troubleshooting](Troubleshooting.md)
 
-## Fleet Model
+## Fleet model
 
-This chart manages a small Freqtrade fleet inside one Helm release.
+This chart manages a small Freqtrade fleet inside one Helm release. The public values model has only three top-level sections:
 
-- `dashboard` is optional and runs `freqtrade webserver`
-- `bots[]` contains one StatefulSet per trading bot
+| Section | Role |
+|---------|------|
+| `global` | Shared defaults for image, security, scheduling, resources, and pod-level settings |
+| `dashboard` | Optional shared `freqtrade webserver` instance for FreqUI and graphing |
+| `bots[]` | Independent trading bots, one per strategy/runtime profile |
 
 The chart intentionally does not model a privileged root bot.
 
@@ -38,7 +41,7 @@ Each bot is isolated:
 - one Ingress when UI and ingress are enabled
 - default startup state `running` unless `config.public.initial_state` overrides it
 
-Bots share a chart release, but not runtime state.
+Bots share a chart release, but not runtime state. This keeps upgrades predictable while still keeping related bots together in one Helm release.
 
 ## Strategy Delivery
 
@@ -50,7 +53,7 @@ Bots support three strategy patterns:
 
 `initSync` is the best fit for Git-managed strategy experiments. `image` is the best fit for immutable production delivery.
 
-## Config Model
+## Config model
 
 The chart mirrors Freqtrade’s split between public and private config:
 
@@ -58,9 +61,24 @@ The chart mirrors Freqtrade’s split between public and private config:
 - `config.secret` becomes `config-private.json`
 - existing Secret and ExternalSecret flows are supported for the private file
 
-The chart injects `api_server` defaults when API or UI is enabled.
+The chart injects a small set of operational defaults so bot UX is sane by default:
 
-## Network Model
+- `dry_run` defaults from `mode`
+- `initial_state` defaults to `running` for bots
+- `api_server.enabled`, `listen_ip_address`, and `listen_port` are set when API or UI is enabled
+- bot `api_server.CORS_origins` can default from `dashboard.ingress.host`
+
+## Resource model
+
+| Component | Resources |
+|-----------|-----------|
+| Dashboard | `StatefulSet`, headless Service, optional API Service, optional Ingress, ConfigMap, Secret or ExternalSecret, PVC, optional NetworkPolicy |
+| Bot | `StatefulSet`, headless Service, optional API Service, optional Ingress, ConfigMap, Secret or ExternalSecret, PVC, optional strategy PVC, optional NetworkPolicy |
+| Dashboard data job | `Job` or `CronJob` plus shared ConfigMap/Secret/PVC mounts |
+
+The chart uses `StatefulSet` everywhere for long-running workloads because Freqtrade is singleton-oriented and often stores state locally in `user_data`.
+
+## Network model
 
 - Dashboard ingress is suitable for a shared analysis UI
 - Bot ingress is optional and should be treated as an admin/API surface

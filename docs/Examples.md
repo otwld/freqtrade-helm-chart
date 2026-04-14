@@ -12,41 +12,25 @@ The chart ships curated examples for common patterns. They are designed to be sm
 
 ## Example Catalog
 
-### `examples/minimal.yaml`
+| File | Best for | Notes |
+|------|----------|-------|
+| `examples/minimal.yaml` | First local install | One bot, no ingress, API enabled |
+| `examples/bot-with-telegram.yaml` | Telegram setup | Uses the chart-managed `bots[].telegram` block |
+| `examples/dashboard-and-bots.yaml` | Small multi-bot fleet | Shared dashboard plus multiple bots |
+| `examples/recommended-fleet.yaml` | Production-style baseline | Public dashboard, private bots, existing secrets |
+| `examples/private-bot-ui.yaml` | Private operator workflows | Bot UI enabled, no public ingress |
+| `examples/public-dashboard.yaml` | Shared graphing UI | Public dashboard plus recurring `download-data` job |
+| `examples/external-secret.yaml` | ESO integration | Private config sourced from External Secrets Operator |
+| `examples/existing-pvc.yaml` | Storage reuse | Uses pre-provisioned PVCs instead of chart-managed claims |
+| `examples/strategy-init-sync.yaml` | Git-managed strategies | Pulls strategy code with `initSync` |
+| `examples/values-freqtrade-v2.yaml` | Full integration overlay | Mirrors the larger validation namespace used during chart development |
 
-One bot, no ingress, API enabled. Best starting point for local development and port-forward access.
+## Choosing the right example
 
-### `examples/bot-with-telegram.yaml`
-
-One bot with Telegram enabled through the chart-managed `bots[].telegram` block.
-
-### `examples/dashboard-and-bots.yaml`
-
-Shared dashboard plus multiple bots. Good reference for a small fleet.
-
-### `examples/private-bot-ui.yaml`
-
-Bot UI enabled, but no public ingress. Intended for operator use through port-forward or private networking.
-
-### `examples/public-dashboard.yaml`
-
-Dashboard with ingress and a companion data job for graph data. Good analysis-first deployment.
-
-### `examples/external-secret.yaml`
-
-Shows private config sourced from External Secrets Operator.
-
-### `examples/existing-pvc.yaml`
-
-Uses pre-provisioned storage instead of chart-managed PVCs.
-
-### `examples/strategy-init-sync.yaml`
-
-Shows Git-based strategy delivery with `initSync`.
-
-### `examples/values-freqtrade-v2.yaml`
-
-Integration-style example mirroring the live `freqtrade-v2` namespace used for chart validation.
+- Start from `minimal.yaml` if you are validating the chart locally.
+- Start from `recommended-fleet.yaml` if you want a production-style baseline.
+- Start from `dashboard-and-bots.yaml` if you want a small fleet with a shared UI.
+- Start from `public-dashboard.yaml` if graph pages matter more than per-bot ingress.
 
 ## Usage
 

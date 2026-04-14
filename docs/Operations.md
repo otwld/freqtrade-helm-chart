@@ -7,7 +7,7 @@
 - [Examples](Examples.md)
 - [Troubleshooting](Troubleshooting.md)
 
-## Install
+## Local install
 
 ```bash
 helm upgrade --install freqtrade . \
@@ -16,11 +16,12 @@ helm upgrade --install freqtrade . \
   --create-namespace
 ```
 
-## Upgrade
+## Upgrade workflow
 
 Recommended preflight:
 
 ```bash
+./scripts/generate-docs.sh
 ./scripts/lint-examples.sh .
 helm lint . -f examples/values-freqtrade-v2.yaml
 helm template freqtrade . -f examples/values-freqtrade-v2.yaml >/tmp/freqtrade-rendered.yaml
@@ -34,7 +35,7 @@ helm upgrade --install freqtrade . \
   -f examples/values-freqtrade-v2.yaml
 ```
 
-## Access Bots Locally
+## Access bots locally
 
 Use the helper script:
 
@@ -45,7 +46,30 @@ Use the helper script:
 ./scripts/bot-access.sh stop
 ```
 
-## Release Recovery
+## Bot onboarding checklist
+
+For each new bot:
+
+1. Add a new `bots[]` entry.
+2. Set `name`, `mode`, `strategy`, `config.public`, and private API credentials.
+3. Set `enabled: false` only when you want the bot to stay in values without rendering resources.
+4. Choose a strategy delivery pattern:
+   - `image` for immutable production delivery
+   - `initSync` for Git-based experimentation
+   - `volume` when strategies are managed outside the chart
+5. Decide whether the bot should expose:
+   - API only
+   - UI + private ingress
+   - no ingress, port-forward only
+6. If the bot should be reachable from the shared dashboard UI, either:
+   - leave `api.corsOrigins` empty and let the chart default from `dashboard.ingress.host`
+   - or set `api.corsOrigins` explicitly for custom origins
+7. If Telegram is required, configure `bots[].telegram`.
+8. By default the chart sets `config.public.initial_state=running`. Override it to `stopped` only when you intentionally want the bot to boot paused.
+9. Run `helm lint` and `helm template`.
+10. Upgrade the release.
+
+## Release recovery
 
 If `helm status` shows `superseded`, `pending-upgrade`, or no deployed revision:
 
@@ -59,26 +83,7 @@ If `helm status` shows `superseded`, `pending-upgrade`, or no deployed revision:
 5. If Helm metadata is still stuck, remove only the broken release metadata secrets for the failed pending revision and retry the same upgrade.
 6. Avoid continuing with `kubectl apply` as a steady-state workflow, or future upgrades will drift again.
 
-## Bot Onboarding
-
-For each new bot:
-
-1. Add a new `bots[]` entry.
-2. Set `name`, `mode`, `strategy`, `config.public`, and private API credentials.
-3. Set `enabled: false` only when you want the bot to stay in values without rendering resources.
-4. If Telegram is required, configure `bots[].telegram` with `enabled`, `token`, and `chatId`.
-5. Decide whether the bot should expose:
-   - API only
-   - UI + private ingress
-   - no ingress, port-forward only
-6. If the bot should be reachable from the shared dashboard UI, either:
-   - leave `api.corsOrigins` empty and let the chart default from `dashboard.ingress.host`
-   - or set `api.corsOrigins` explicitly for custom origins
-7. By default the chart sets `config.public.initial_state=running`. Override it to `stopped` only when you intentionally want the bot to boot paused.
-8. Run `helm lint` and `helm template`.
-9. Upgrade the release.
-
-## Telegram Setup
+## Telegram setup
 
 The chart exposes Telegram only for bots through `bots[].telegram`.
 
@@ -122,7 +127,7 @@ Official upstream docs:
 - https://www.freqtrade.io/en/stable/telegram-usage/
 - https://www.freqtrade.io/en/stable/configuration/
 
-## Related Docs
+## Related docs
 
 - [Architecture](Architecture.md)
 - [Examples](Examples.md)

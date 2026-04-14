@@ -1,0 +1,114 @@
+# Recommended baseline for a small production-style fleet:
+# - shared dashboard exposed by ingress
+# - private bot APIs with no bot ingress
+# - existing Secrets for private API credentials
+# - dashboard-origin CORS derived automatically for bots
+
+dashboard:
+  enabled: true
+  ingress:
+    enabled: true
+    className: traefik
+    host: freqtrade.example.com
+  config:
+    public:
+      timeframe: 15m
+      stake_currency: USDT
+      stake_amount: unlimited
+      dry_run_wallet: 1000
+      max_open_trades: 5
+      exchange:
+        name: binance
+        pair_whitelist:
+          - BTC/USDT
+          - ETH/USDT
+          - SOL/USDT
+        pair_blacklist: []
+      pairlists:
+        - method: StaticPairList
+    existingSecret: dashboard-private-config
+  dataJobs:
+    enabled: true
+    downloadData:
+      enabled: true
+      schedule: "0 */6 * * *"
+      pairs:
+        - BTC/USDT
+        - ETH/USDT
+        - SOL/USDT
+      timeframes:
+        - 15m
+
+bots:
+  - name: ichi
+    mode: dryRun
+    strategy:
+      name: Ichi
+      source:
+        type: image
+    api:
+      enabled: true
+    ui:
+      enabled: true
+    ingress:
+      enabled: false
+    config:
+      public:
+        timeframe: 15m
+        stake_currency: USDT
+        stake_amount: unlimited
+        dry_run_wallet: 1000
+        max_open_trades: 3
+        exchange:
+          name: binance
+          pair_whitelist:
+            - BTC/USDT
+            - ETH/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      existingSecret: ichi-private-config
+
+  - name: swing
+    mode: dryRun
+    strategy:
+      name: SwingStrategy
+      source:
+        type: image
+    api:
+      enabled: true
+    ui:
+      enabled: false
+    config:
+      public:
+        timeframe: 1h
+        stake_currency: USDT
+        stake_amount: unlimited
+        dry_run_wallet: 1000
+        max_open_trades: 3
+        exchange:
+          name: binance
+          pair_whitelist:
+            - BTC/USDT
+            - ETH/USDT
+            - SOL/USDT
+          pair_blacklist: []
+        pairlists:
+          - method: StaticPairList
+        entry_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+        exit_pricing:
+          price_side: same
+          use_order_book: true
+          order_book_top: 1
+      existingSecret: swing-private-config

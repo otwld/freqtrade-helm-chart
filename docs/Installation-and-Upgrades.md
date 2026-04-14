@@ -27,17 +27,16 @@ helm upgrade --install freqtrade . \
   -f examples/dashboard-and-bots.yaml
 ```
 
-## Upgrade
-
-Recommended preflight:
+## Recommended preflight
 
 ```bash
+./scripts/generate-docs.sh
 ./scripts/lint-examples.sh .
 helm lint . -f examples/values-freqtrade-v2.yaml
 helm template freqtrade . -f examples/values-freqtrade-v2.yaml >/tmp/freqtrade-rendered.yaml
 ```
 
-Upgrade:
+## Upgrade from the published repo
 
 ```bash
 helm repo update
@@ -46,7 +45,7 @@ helm upgrade --install freqtrade otwld/freqtrade \
   -f values.yaml
 ```
 
-For local chart testing:
+## Upgrade from the local checkout
 
 ```bash
 helm upgrade --install freqtrade . \

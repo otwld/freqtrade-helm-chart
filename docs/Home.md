@@ -10,16 +10,25 @@
 - [Troubleshooting](Troubleshooting.md)
 - [Generated Values Reference](../README.md#values)
 
-## Overview
+## What this chart is for
 
-This chart manages a Freqtrade fleet inside one Helm release.
+This chart manages a small Freqtrade fleet inside one Helm release:
 
-- `dashboard` is optional and runs `freqtrade webserver`
-- `bots[]` contains one isolated StatefulSet per trading bot
+- `dashboard` is an optional analysis-first `freqtrade webserver`
+- `bots[]` contains one isolated trading bot per strategy/runtime profile
+- `dashboard.dataJobs` populate historical candle data for graph pages
 
-The repo is the source of truth for these docs. If you maintain a GitHub wiki, copy or export the pages in this directory into the wiki repository.
+The chart intentionally does not model a privileged root bot. That keeps the public API small and makes resource ownership explicit.
 
-The generated values reference stays in the repository `README.md` so it can be refreshed automatically from `values.yaml`.
+## Documentation source of truth
+
+The repository is the source of truth for these docs. If you maintain a GitHub wiki, copy or export the pages in this directory into the wiki repository with:
+
+```bash
+./scripts/export-wiki.sh /path/to/freqtrade-helm-chart.wiki
+```
+
+The generated values reference stays in [README.md](../README.md#values) so it can be refreshed automatically from `values.yaml`.
 
 ## Recommended reading order
 

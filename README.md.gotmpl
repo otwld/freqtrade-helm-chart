@@ -1,4 +1,4 @@
-![otwld ollama helm chart banner](./banner.png)
+![otwld freqtrade helm chart banner](./banner.png)
 
 # Freqtrade Helm Chart
 
@@ -9,9 +9,9 @@
 
 Production-grade Helm chart for running Freqtrade dashboards and multi-bot fleets on Kubernetes.
 
-## Highlights
+## Why this chart
 
-- Fleet-oriented design built around `dashboard` and `bots[]`
+- Fleet-oriented model built around `dashboard` and `bots[]`
 - Isolated StatefulSet, ConfigMap, Secret, PVC, Service, and optional Ingress per bot
 - Shared analysis dashboard with optional companion data jobs for graphing
 - Strategy delivery via image, PVC, or `initSync`
@@ -19,7 +19,15 @@ Production-grade Helm chart for running Freqtrade dashboards and multi-bot fleet
 - Bot-level Telegram support aligned with the official Freqtrade configuration model
 - Render-time validation for common Freqtrade configuration mistakes
 
-## Install From OTWLD Helm Repo
+## Architecture at a glance
+
+| Component | Purpose | Workload | Storage | Exposure |
+|-----------|---------|----------|---------|----------|
+| `dashboard` | Shared FreqUI and analysis webserver | `StatefulSet` | Dedicated `user_data` PVC | Service + optional ingress |
+| `bots[]` | One trading bot per strategy/runtime profile | `StatefulSet` | One `user_data` PVC per bot | Service + optional ingress |
+| `dashboard.dataJobs` | Shared chart-data fetch for graph pages | `Job` or `CronJob` | Reuses dashboard PVC | Internal only |
+
+## Install from OTWLD Helm Repo
 
 ```bash
 helm repo add otwld https://helm.otwld.com/
@@ -30,7 +38,7 @@ helm upgrade --install freqtrade otwld/freqtrade \
   -f values.yaml
 ```
 
-## Local Development Quick Start
+## Local development quick start
 
 ```bash
 helm lint .
@@ -43,10 +51,24 @@ helm upgrade --install freqtrade . \
   -f examples/minimal.yaml
 ```
 
-## Documentation
+## Example catalog
 
-- The repo is the source of truth for the handbook and is structured so it can be copied directly into a GitHub wiki.
-- [Wiki Home](docs/Home.md)
+| File | Use case |
+|------|----------|
+| [`examples/minimal.yaml`](examples/minimal.yaml) | One bot, no ingress, API enabled |
+| [`examples/bot-with-telegram.yaml`](examples/bot-with-telegram.yaml) | Bot-level Telegram integration |
+| [`examples/dashboard-and-bots.yaml`](examples/dashboard-and-bots.yaml) | Shared dashboard plus multiple bots |
+| [`examples/recommended-fleet.yaml`](examples/recommended-fleet.yaml) | Recommended production-style baseline with public dashboard and private bots |
+| [`examples/private-bot-ui.yaml`](examples/private-bot-ui.yaml) | Bot UI enabled, no public ingress |
+| [`examples/public-dashboard.yaml`](examples/public-dashboard.yaml) | Public dashboard with recurring data jobs |
+| [`examples/external-secret.yaml`](examples/external-secret.yaml) | Private config sourced from External Secrets Operator |
+| [`examples/existing-pvc.yaml`](examples/existing-pvc.yaml) | Reuse existing storage |
+| [`examples/strategy-init-sync.yaml`](examples/strategy-init-sync.yaml) | Git-based strategy delivery |
+| [`examples/values-freqtrade-v2.yaml`](examples/values-freqtrade-v2.yaml) | Large integration-style validation overlay |
+
+## Operator docs
+
+- [Home](docs/Home.md)
 - [Architecture](docs/Architecture.md)
 - [Installation and Upgrades](docs/Installation-and-Upgrades.md)
 - [Examples](docs/Examples.md)
@@ -60,41 +82,13 @@ To export the handbook into a checked-out GitHub wiki repository:
 ./scripts/export-wiki.sh /path/to/freqtrade-helm-chart.wiki
 ```
 
-## Values Model
-
-Top-level values are intentionally small:
-
-- `global`: shared defaults
-- `dashboard`: optional shared webserver instance
-- `bots`: list of independent bot instances
-
-## Examples
-
-- [`examples/minimal.yaml`](examples/minimal.yaml)
-- [`examples/bot-with-telegram.yaml`](examples/bot-with-telegram.yaml)
-- [`examples/dashboard-and-bots.yaml`](examples/dashboard-and-bots.yaml)
-- [`examples/private-bot-ui.yaml`](examples/private-bot-ui.yaml)
-- [`examples/public-dashboard.yaml`](examples/public-dashboard.yaml)
-- [`examples/external-secret.yaml`](examples/external-secret.yaml)
-- [`examples/existing-pvc.yaml`](examples/existing-pvc.yaml)
-- [`examples/strategy-init-sync.yaml`](examples/strategy-init-sync.yaml)
-- [`examples/values-freqtrade-v2.yaml`](examples/values-freqtrade-v2.yaml)
-
-## Release Workflow
-
-- `./scripts/generate-docs.sh` refreshes `README.md` from `README.md.gotmpl` and `values.yaml`
-- `./scripts/lint-examples.sh .` validates the chart and every shipped example
-- `.github/workflows/ci.yaml` enforces docs freshness and packages the chart on every PR and `main` push
-- `.github/workflows/release-readiness.yaml` validates tagged builds and uploads the packaged chart artifact
-- `.github/workflows/cd.yaml` publishes tagged releases to GitHub releases and mirrors the chart sources into the central `helm-charts` repository used by `https://helm.otwld.com/`
-
 ## Telegram
 
 Telegram is configured per bot through `bots[].telegram`.
 
 - Required when enabled: `token`, `chatId`
 - Optional upstream-aligned fields: `topicId`, `authorizedUsers`, `allowCustomMessages`, `reload`, `balanceDustLevel`, `notificationSettings`, `keyboard`
-- Keep Telegram secrets in secure values handling; the chart renders them as a separate secret-backed config overlay
+- The chart renders Telegram as a dedicated secret-backed config overlay instead of mixing it into `config.public`
 
 Reference:
 
@@ -108,75 +102,22 @@ This reference is generated from `values.yaml` with `helm-docs`.
 
 Notes:
 
-- `bots` is an array of bot definitions. Since the default is `[]`, use [Examples](docs/Examples.md) and the inline comments in `values.yaml` for the per-bot instance shape.
-- `dashboard` and `global` defaults are documented directly below.
+- `global` contains cross-cutting defaults shared by every workload
+- `dashboard` models the optional analysis-first `freqtrade webserver`
+- `bots` is an array. Since the default is `[]`, use the commented bot skeleton in `values.yaml` and the curated examples for the per-bot shape
 
 {{ template "chart.valuesTable" . }}
 
 {{ template "chart.sourcesSection" . }}
 
-## Core team
+## Release workflow
 
-<table>
-    <tr>
-       <td align="center">
-            <a href="https://github.com/ntrehout"
-                ><img
-                    src="https://github.com/ntrehout.png?size=200"
-                    width="50"
-                    style="margin-bottom: -4px; border-radius: 8px;"
-                    alt="Jean Baptiste Detroyes"
-                /><br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nathan&nbsp;Tréhout&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></a
-            >
-            <div style="margin-top: 4px">
-                <a href="https://x.com/n_trehout" title="Twitter"
-                    ><img
-                        width="16"
-                        src="https://raw.githubusercontent.com/MarsiBarsi/readme-icons/main/twitter.svg"
-                /></a>
-                <a href="https://github.com/ntrehout" title="Github"
-                    ><img
-                        width="16"
-                        src="https://raw.githubusercontent.com/MarsiBarsi/readme-icons/main/github.svg"
-                /></a>
-                <a
-                    href="mailto:ntrehout@otwld.com"
-                    title="Email"
-                    ><img
-                        width="16"
-                        src="https://raw.githubusercontent.com/MarsiBarsi/readme-icons/main/send.svg"
-                /></a>
-            </div>
-        </td>
-       <td align="center">
-            <a href="https://github.com/jdetroyes"
-                ><img
-                    src="https://github.com/jdetroyes.png?size=200"
-                    width="50"
-                    style="margin-bottom: -4px; border-radius: 8px;"
-                    alt="Jean Baptiste Detroyes"
-                /><br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jean Baptiste&nbsp;Detroyes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></a
-            >
-            <div style="margin-top: 4px">
-                <a href="https://github.com/jdetroyes" title="Github"
-                    ><img
-                        width="16"
-                        src="https://raw.githubusercontent.com/MarsiBarsi/readme-icons/main/github.svg"
-                /></a>
-                <a
-                    href="mailto:jdetroyes@otwld.com"
-                    title="Email"
-                    ><img
-                        width="16"
-                        src="https://raw.githubusercontent.com/MarsiBarsi/readme-icons/main/send.svg"
-                /></a>
-            </div>
-        </td>
-    </tr>
-</table>
+- `./scripts/generate-docs.sh` refreshes `README.md` from `README.md.gotmpl` and `values.yaml`
+- `./scripts/lint-examples.sh .` validates the chart and every shipped example
+- `.github/workflows/ci.yaml` enforces docs freshness and packages the chart on every PR and `main` push
+- `.github/workflows/release-readiness.yaml` validates tagged builds and uploads the packaged chart artifact
+- `.github/workflows/cd.yaml` publishes tagged releases to GitHub releases and mirrors the chart sources into the central `helm-charts` repository used by `https://helm.otwld.com/`
 
 ## Support
 
-- For questions, suggestions, and discussion about this chart please
-  visit [Freqtrade-Helm issue page](https://github.com/otwld/freqtrade-helm-chart/issues) or join
-  our [OTWLD Discord](https://discord.gg/U24mpqTynB)
+- For questions, suggestions, and discussion about this chart please visit [Freqtrade-Helm issue page](https://github.com/otwld/freqtrade-helm-chart/issues) or join our [OTWLD Discord](https://discord.gg/U24mpqTynB)
