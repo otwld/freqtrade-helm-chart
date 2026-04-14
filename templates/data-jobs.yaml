@@ -5,7 +5,8 @@
 {{- $image := mergeOverwrite (deepCopy (.Values.global.image | default dict)) ($instance.image | default dict) -}}
 {{- $schedule := $job.schedule | default "" -}}
 {{- $scheduled := ne $schedule "" -}}
-{{- $name := include "freqtrade.dashboard.dataJobName" (dict "root" . "instance" $instance "job" $job "scheduled" $scheduled) -}}
+{{- $spec := include "freqtrade.dashboard.dataJobSpec" (dict "root" . "instance" $instance "job" $job "image" $image) -}}
+{{- $name := include "freqtrade.dashboard.dataJobName" (dict "root" . "instance" $instance "scheduled" $scheduled "spec" $spec) -}}
 ---
 apiVersion: batch/v1
 kind: {{ ternary "CronJob" "Job" $scheduled }}
@@ -20,9 +21,9 @@ spec:
   failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit }}
   jobTemplate:
     spec:
-      {{- include "freqtrade.dashboard.dataJobSpec" (dict "root" . "instance" $instance "job" $job "image" $image) | nindent 6 }}
+      {{- $spec | nindent 6 }}
   {{- else }}
-  {{- include "freqtrade.dashboard.dataJobSpec" (dict "root" . "instance" $instance "job" $job "image" $image) | nindent 2 }}
+  {{- $spec | nindent 2 }}
   {{- end }}
 {{- end -}}
 {{- end -}}

@@ -27,10 +27,22 @@ Common causes:
 Common causes:
 
 - bot API is not reachable from the browser
-- CORS origins do not match the dashboard origin
+- bot `api.corsOrigins` does not match the dashboard origin
 - wrong username/password stored in the UI
 
 For local access, use [`scripts/bot-access.sh`](../scripts/bot-access.sh).
+
+If `api.corsOrigins` is empty, the chart only defaults bot CORS from `dashboard.ingress.host` when the dashboard ingress is enabled and has a host.
+
+## UI shows bots online but no trades happen
+
+Check the bot application state in the logs or API.
+
+The chart now defaults bots to `initial_state: running`, but a bot can still be paused if:
+
+- `config.public.initial_state` was explicitly set to `stopped`
+- someone stopped it through the UI or API
+- the pod was rolled from an older revision that did not set the startup state you expected
 
 ## Graph page has no pairs
 

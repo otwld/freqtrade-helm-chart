@@ -71,8 +71,12 @@ For each new bot:
    - API only
    - UI + private ingress
    - no ingress, port-forward only
-6. Run `helm lint` and `helm template`.
-7. Upgrade the release.
+6. If the bot should be reachable from the shared dashboard UI, either:
+   - leave `api.corsOrigins` empty and let the chart default from `dashboard.ingress.host`
+   - or set `api.corsOrigins` explicitly for custom origins
+7. By default the chart sets `config.public.initial_state=running`. Override it to `stopped` only when you intentionally want the bot to boot paused.
+8. Run `helm lint` and `helm template`.
+9. Upgrade the release.
 
 ## Telegram Setup
 

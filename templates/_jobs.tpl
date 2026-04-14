@@ -6,7 +6,7 @@ Shared volume mounts for dashboard data jobs.
 {{- if .scheduled -}}
 {{- $base -}}
 {{- else -}}
-{{- $identity := dict "chartVersion" .root.Chart.Version "job" .job -}}
+{{- $identity := dict "chartVersion" .root.Chart.Version "spec" .spec -}}
 {{- printf "%s-%s" $base ((toYaml $identity) | sha256sum | trunc 8) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}

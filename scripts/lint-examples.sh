@@ -10,6 +10,10 @@ if ! command -v helm >/dev/null 2>&1; then
   exit 1
 fi
 
+if [[ -x "$CHART_DIR/scripts/generate-docs.sh" ]]; then
+  "$CHART_DIR/scripts/generate-docs.sh"
+fi
+
 helm lint "$CHART_DIR"
 
 shopt -s nullglob

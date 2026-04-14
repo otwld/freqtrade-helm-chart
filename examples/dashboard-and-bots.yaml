@@ -49,8 +49,6 @@ bots:
         type: image
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.example.internal
     ui:
       enabled: true
     ingress:
@@ -100,8 +98,6 @@ bots:
         type: image
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.example.internal
     ui:
       enabled: false
     config:

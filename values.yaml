@@ -97,6 +97,7 @@ dashboard:
 
   api:
     enabled: true
+    # Dashboard-only CORS. Bots default from dashboard.ingress.host separately.
     port: 8080
     corsOrigins: []
 
@@ -209,6 +210,17 @@ dashboard:
 # - inline `config.secret`
 # - or `config.existingSecret`
 # - or `config.externalSecret`
+#
+# Bot API CORS:
+# - Set `api.corsOrigins` explicitly when the bot should trust custom origins
+# - If `api.corsOrigins` is empty and `dashboard.ingress.enabled=true`, the chart
+#   auto-populates bot `api_server.CORS_origins` from `dashboard.ingress.host`
+#   using both `https://<host>` and `http://<host>`
+# - This avoids per-bot CORS churn when the shared dashboard host changes
+#
+# Startup behavior:
+# - Bots default `config.public.initial_state` to `running`
+# - Set `config.public.initial_state=stopped` if you want a bot to boot paused
 #
 # Strategy delivery:
 # - `strategy.source.type=image` for strategies baked into the image

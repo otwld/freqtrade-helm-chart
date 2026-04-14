@@ -36,6 +36,7 @@ Each bot is isolated:
 - one user-data PVC
 - one API Service when enabled
 - one Ingress when UI and ingress are enabled
+- default startup state `running` unless `config.public.initial_state` overrides it
 
 Bots share a chart release, but not runtime state.
 
@@ -64,5 +65,6 @@ The chart injects `api_server` defaults when API or UI is enabled.
 - Dashboard ingress is suitable for a shared analysis UI
 - Bot ingress is optional and should be treated as an admin/API surface
 - Private access or strongly protected ingress is preferred for bots
+- Bots default API CORS from `dashboard.ingress.host` when `api.corsOrigins` is left empty. The chart emits both `https://<dashboard host>` and `http://<dashboard host>` to handle common ingress and TLS-termination patterns.
 
 See [Operations](Operations.md) and [Troubleshooting](Troubleshooting.md) for operational guidance.

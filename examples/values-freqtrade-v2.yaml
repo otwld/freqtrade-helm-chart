@@ -74,8 +74,6 @@ bots:
       host: ichi.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 15m
@@ -149,8 +147,6 @@ bots:
       host: babico.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 15m
@@ -224,8 +220,6 @@ bots:
       host: nfi-x.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 5m
@@ -302,8 +296,6 @@ bots:
       host: nfi-x2.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 5m
@@ -380,8 +372,6 @@ bots:
       host: nfi-x3.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 5m
@@ -458,8 +448,6 @@ bots:
       host: nfi-x4.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 5m
@@ -536,8 +524,6 @@ bots:
       host: nfi-x5.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 5m
@@ -614,8 +600,6 @@ bots:
       host: nfi-x6.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 5m
@@ -692,8 +676,6 @@ bots:
       host: nfi-x7.freqtrade-v2.local
     api:
       enabled: true
-      corsOrigins:
-        - http://dashboard.freqtrade-v2.local
     config:
       public:
         timeframe: 5m

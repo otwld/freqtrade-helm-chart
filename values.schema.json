@@ -87,6 +87,7 @@
         "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
         "corsOrigins": {
           "type": "array",
+          "description": "Allowed browser origins for this API. For bots, leaving this empty defaults CORS to both https://<dashboard ingress host> and http://<dashboard ingress host> when dashboard.ingress.host is configured.",
           "items": { "type": "string" }
         }
       }

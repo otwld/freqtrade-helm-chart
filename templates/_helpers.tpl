@@ -336,15 +336,31 @@ Resolve mode command.
 {{/*
 Effective public config with API defaults injected.
 */}}
+{{- define "freqtrade.instance.effectiveCorsOrigins" -}}
+{{- $origins := .instance.api.corsOrigins | default list -}}
+{{- if not (empty $origins) -}}
+{{- toYaml $origins -}}
+{{- else if and (eq .instance._component "bot") .root.Values.dashboard.enabled .root.Values.dashboard.ingress.enabled .root.Values.dashboard.ingress.host -}}
+{{- $host := .root.Values.dashboard.ingress.host -}}
+{{- toYaml (list (printf "https://%s" $host) (printf "http://%s" $host)) -}}
+{{- else -}}
+{{- toYaml (list) -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "freqtrade.instance.effectivePublicConfig" -}}
 {{- $config := deepCopy (.instance.config.public | default dict) -}}
 {{- if eq .instance._component "bot" -}}
   {{- if not (hasKey $config "dry_run") -}}
     {{- $_ := set $config "dry_run" (eq .instance.mode "dryRun") -}}
   {{- end -}}
+  {{- if not (hasKey $config "initial_state") -}}
+    {{- $_ := set $config "initial_state" "running" -}}
+  {{- end -}}
 {{- end -}}
 {{- if or .instance.api.enabled .instance.ui.enabled (eq .instance._component "dashboard") -}}
   {{- $apiServer := deepCopy ((get $config "api_server") | default dict) -}}
+  {{- $corsOrigins := include "freqtrade.instance.effectiveCorsOrigins" . | fromYamlArray -}}
   {{- $_ := set $apiServer "enabled" true -}}
   {{- if not (hasKey $apiServer "listen_ip_address") -}}
     {{- $_ := set $apiServer "listen_ip_address" "0.0.0.0" -}}
@@ -352,8 +368,8 @@ Effective public config with API defaults injected.
   {{- if not (hasKey $apiServer "listen_port") -}}
     {{- $_ := set $apiServer "listen_port" .instance.api.port -}}
   {{- end -}}
-  {{- if .instance.api.corsOrigins -}}
-    {{- $_ := set $apiServer "CORS_origins" .instance.api.corsOrigins -}}
+  {{- if not (empty $corsOrigins) -}}
+    {{- $_ := set $apiServer "CORS_origins" $corsOrigins -}}
   {{- end -}}
   {{- $_ := set $config "api_server" $apiServer -}}
 {{- end -}}
@@ -601,7 +617,8 @@ Validate one instance.
 {{- if and $instance.ingress.enabled (not $instance.ingress.host) -}}
 {{- fail (printf "%s: ingress.host is required when ingress.enabled=true" $instance._name) -}}
 {{- end -}}
-{{- range $origin := ($instance.api.corsOrigins | default list) }}
+{{- $effectiveCorsOrigins := include "freqtrade.instance.effectiveCorsOrigins" . | fromYamlArray -}}
+{{- range $origin := ($effectiveCorsOrigins | default list) }}
   {{- if hasSuffix "/" $origin -}}
     {{- fail (printf "%s: api.corsOrigins entries must not end with '/': %s" $instance._name $origin) -}}
   {{- end -}}
