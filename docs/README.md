@@ -1,13 +1,11 @@
-# Docs Index
+# Docs
 
-- [Architecture](architecture.md)
-- [Operations](operations.md)
-- [Examples](examples.md)
-- [Troubleshooting](troubleshooting.md)
+The handbook moved to wiki-style pages so it can be copied directly into a GitHub wiki.
 
-Recommended reading order for new operators:
-
-1. [Architecture](architecture.md)
-2. [Examples](examples.md)
-3. [Operations](operations.md)
-4. [Troubleshooting](troubleshooting.md)
+- [Home](Home.md)
+- [Architecture](Architecture.md)
+- [Installation and Upgrades](Installation-and-Upgrades.md)
+- [Examples](Examples.md)
+- [Operations](Operations.md)
+- [Releases and CI](Releases-and-CI.md)
+- [Troubleshooting](Troubleshooting.md)

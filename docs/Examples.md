@@ -1,5 +1,11 @@
 # Examples
 
+## Navigation
+
+- [Home](Home.md)
+- [Installation and Upgrades](Installation-and-Upgrades.md)
+- [Operations](Operations.md)
+
 ## Overview
 
 The chart ships curated examples for common patterns. They are designed to be small and readable instead of comprehensive.
@@ -45,8 +51,8 @@ Integration-style example mirroring the live `freqtrade-v2` namespace used for c
 ## Usage
 
 ```bash
-helm lint projects/charts/freqtrade -f projects/charts/freqtrade/examples/minimal.yaml
-helm template test projects/charts/freqtrade -f projects/charts/freqtrade/examples/minimal.yaml
+helm lint . -f examples/minimal.yaml
+helm template test . -f examples/minimal.yaml
 ```
 
-See [Operations](operations.md) for install and upgrade commands.
+See [Installation and Upgrades](Installation-and-Upgrades.md) for install and upgrade commands.

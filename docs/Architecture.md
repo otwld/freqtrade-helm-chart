@@ -1,5 +1,12 @@
 # Architecture
 
+## Navigation
+
+- [Home](Home.md)
+- [Examples](Examples.md)
+- [Operations](Operations.md)
+- [Troubleshooting](Troubleshooting.md)
+
 ## Fleet Model
 
 This chart manages a small Freqtrade fleet inside one Helm release.
@@ -58,4 +65,4 @@ The chart injects `api_server` defaults when API or UI is enabled.
 - Bot ingress is optional and should be treated as an admin/API surface
 - Private access or strongly protected ingress is preferred for bots
 
-See [Operations](operations.md) and [Troubleshooting](troubleshooting.md) for operational guidance.
+See [Operations](Operations.md) and [Troubleshooting](Troubleshooting.md) for operational guidance.

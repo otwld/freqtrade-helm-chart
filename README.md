@@ -1,42 +1,47 @@
 # Freqtrade Helm Chart
 
-Fleet-oriented Helm chart for running Freqtrade dashboards and trading bots on Kubernetes.
+[![CI](https://github.com/otwld/freqtrade-helm-chart/actions/workflows/ci.yaml/badge.svg)](https://github.com/otwld/freqtrade-helm-chart/actions/workflows/ci.yaml)
+[![Release Readiness](https://github.com/otwld/freqtrade-helm-chart/actions/workflows/release-readiness.yaml/badge.svg)](https://github.com/otwld/freqtrade-helm-chart/actions/workflows/release-readiness.yaml)
 
-This chart is designed around two first-class concepts:
+Production-grade Helm chart for running Freqtrade dashboards and multi-bot fleets on Kubernetes.
 
-- `dashboard`: an optional shared `freqtrade webserver` instance for analysis and graphing
-- `bots[]`: one or more isolated trading bots, each with its own config, secret, storage, service, and optional ingress
+The chart is built around two first-class concepts:
 
-## Highlights
+- `dashboard`: an optional shared `freqtrade webserver` instance for analysis, graphing, and pair data
+- `bots[]`: one or more isolated trading bots, each with its own config, secret, strategy source, storage, service, and optional ingress
 
-- Fleet model with one release managing a dashboard and multiple bots
-- One isolated StatefulSet per bot
+## Why this chart
+
+- Fleet-oriented model with one release managing a dashboard and multiple bots
+- One isolated StatefulSet per bot and one isolated StatefulSet for the dashboard
 - Per-instance ConfigMap, Secret, PVC, Service, and Ingress
 - Strategy delivery via image, PVC, or `initSync`
 - Dashboard companion data jobs for graph and pair data
 - Render-time validation for common Freqtrade misconfigurations
-- Operational helper script for bot login details and local port-forwards
+- Operator helper scripts for example linting and local bot access
 
-## Quick Start
+## Quick start
 
 ```bash
-helm lint projects/charts/freqtrade
-helm upgrade --install freqtrade-v2 projects/charts/freqtrade \
-  -n freqtrade-v2 \
-  -f projects/charts/freqtrade/examples/minimal.yaml
+helm lint .
+./scripts/lint-examples.sh .
+
+helm upgrade --install freqtrade ./ \
+  --namespace freqtrade \
+  --create-namespace \
+  -f examples/minimal.yaml
 ```
 
 Useful follow-up commands:
 
 ```bash
-helm template freqtrade-v2 projects/charts/freqtrade \
-  -f projects/charts/freqtrade/examples/dashboard-and-bots.yaml
+helm template freqtrade . -f examples/dashboard-and-bots.yaml
 
-projects/charts/freqtrade/scripts/bot-access.sh list
-projects/charts/freqtrade/scripts/bot-access.sh start
+./scripts/bot-access.sh list
+./scripts/bot-access.sh start
 ```
 
-## Architecture
+## Architecture at a glance
 
 The chart uses one shared instance schema for both the dashboard and bots:
 
@@ -48,15 +53,25 @@ The chart uses one shared instance schema for both the dashboard and bots:
 
 Each bot remains operationally independent even though they share one Helm release.
 
-Read more:
+## Documentation
 
-- [Docs index](docs/README.md)
-- [Architecture](docs/architecture.md)
-- [Operations](docs/operations.md)
-- [Examples](docs/examples.md)
-- [Troubleshooting](docs/troubleshooting.md)
+The repo is the source of truth for the handbook and is structured so it can be copied directly into a GitHub wiki.
 
-## Values Structure
+- [Wiki Home](docs/Home.md)
+- [Architecture](docs/Architecture.md)
+- [Installation and Upgrades](docs/Installation-and-Upgrades.md)
+- [Examples](docs/Examples.md)
+- [Operations](docs/Operations.md)
+- [Releases and CI](docs/Releases-and-CI.md)
+- [Troubleshooting](docs/Troubleshooting.md)
+
+To export the handbook into a checked-out GitHub wiki repository:
+
+```bash
+./scripts/export-wiki.sh /path/to/freqtrade-helm-chart.wiki
+```
+
+## Values model
 
 Top-level values are intentionally small:
 
@@ -80,20 +95,6 @@ Curated examples shipped with the chart:
 - [`examples/strategy-init-sync.yaml`](examples/strategy-init-sync.yaml)
 - [`examples/values-freqtrade-v2.yaml`](examples/values-freqtrade-v2.yaml)
 
-## Upgrade Workflow
-
-Recommended workflow:
-
-```bash
-projects/charts/freqtrade/scripts/lint-examples.sh
-
-helm upgrade --install freqtrade-v2 projects/charts/freqtrade \
-  -n freqtrade-v2 \
-  -f projects/charts/freqtrade/examples/values-freqtrade-v2.yaml
-```
-
-If Helm release metadata is unhealthy, use the recovery runbook in [docs/operations.md](docs/operations.md).
-
 ## Telegram
 
 Telegram is configured per bot through `bots[].telegram`.
@@ -112,7 +113,7 @@ Telegram is configured per bot through `bots[].telegram`.
 
 The chart renders Telegram as a dedicated secret-backed config overlay, so `token` and `chatId` stay out of `config.public`.
 
-Use the focused example:
+Reference example:
 
 - [`examples/bot-with-telegram.yaml`](examples/bot-with-telegram.yaml)
 
@@ -121,22 +122,25 @@ Official Freqtrade references:
 - https://www.freqtrade.io/en/stable/telegram-usage/
 - https://www.freqtrade.io/en/stable/configuration/
 
-## Security Notes
+## Security notes
 
 - Treat bot APIs as operator surfaces, not public apps
 - Prefer private access or strongly protected ingress for bot UIs
 - Keep exchange keys in `config.secret`, existing Secrets, or ExternalSecrets
 - Do not expose the dashboard and bot APIs with the same security assumptions
 
-## Repository Layout
+## Repository layout
 
 ```text
-freqtrade/
-├── README.md
+freqtrade-helm-chart/
+├── .github/
 ├── docs/
 ├── examples/
 ├── scripts/
 ├── templates/
+├── CONTRIBUTING.md
+├── Chart.yaml
+├── README.md
 ├── values.yaml
 └── values.schema.json
 ```

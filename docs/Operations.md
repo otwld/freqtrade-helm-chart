@@ -1,11 +1,18 @@
 # Operations
 
+## Navigation
+
+- [Home](Home.md)
+- [Installation and Upgrades](Installation-and-Upgrades.md)
+- [Examples](Examples.md)
+- [Troubleshooting](Troubleshooting.md)
+
 ## Install
 
 ```bash
-helm upgrade --install freqtrade-v2 projects/charts/freqtrade \
-  -n freqtrade-v2 \
-  -f projects/charts/freqtrade/examples/dashboard-and-bots.yaml \
+helm upgrade --install freqtrade . \
+  -n freqtrade \
+  -f examples/dashboard-and-bots.yaml \
   --create-namespace
 ```
 
@@ -14,18 +21,17 @@ helm upgrade --install freqtrade-v2 projects/charts/freqtrade \
 Recommended preflight:
 
 ```bash
-projects/charts/freqtrade/scripts/lint-examples.sh
-helm lint projects/charts/freqtrade -f projects/charts/freqtrade/examples/values-freqtrade-v2.yaml
-helm template freqtrade-v2 projects/charts/freqtrade \
-  -f projects/charts/freqtrade/examples/values-freqtrade-v2.yaml >/tmp/freqtrade-v2-rendered.yaml
+./scripts/lint-examples.sh .
+helm lint . -f examples/values-freqtrade-v2.yaml
+helm template freqtrade . -f examples/values-freqtrade-v2.yaml >/tmp/freqtrade-rendered.yaml
 ```
 
 Upgrade:
 
 ```bash
-helm upgrade --install freqtrade-v2 projects/charts/freqtrade \
-  -n freqtrade-v2 \
-  -f projects/charts/freqtrade/examples/values-freqtrade-v2.yaml
+helm upgrade --install freqtrade . \
+  -n freqtrade \
+  -f examples/values-freqtrade-v2.yaml
 ```
 
 ## Access Bots Locally
@@ -33,10 +39,10 @@ helm upgrade --install freqtrade-v2 projects/charts/freqtrade \
 Use the helper script:
 
 ```bash
-projects/charts/freqtrade/scripts/bot-access.sh list
-projects/charts/freqtrade/scripts/bot-access.sh start
-projects/charts/freqtrade/scripts/bot-access.sh status
-projects/charts/freqtrade/scripts/bot-access.sh stop
+./scripts/bot-access.sh list
+./scripts/bot-access.sh start
+./scripts/bot-access.sh status
+./scripts/bot-access.sh stop
 ```
 
 ## Release Recovery
@@ -114,6 +120,6 @@ Official upstream docs:
 
 ## Related Docs
 
-- [Architecture](architecture.md)
-- [Examples](examples.md)
-- [Troubleshooting](troubleshooting.md)
+- [Architecture](Architecture.md)
+- [Examples](Examples.md)
+- [Troubleshooting](Troubleshooting.md)

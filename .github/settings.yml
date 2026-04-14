@@ -1,0 +1,19 @@
+repository:
+  name: freqtrade-helm-chart
+  description: "Production-grade Helm chart for running Freqtrade dashboards and multi-bot fleets on Kubernetes."
+  homepage: "https://github.com/otwld/freqtrade-helm-chart"
+  has_wiki: true
+  has_issues: true
+  has_projects: false
+  has_downloads: true
+  default_branch: main
+  topics:
+    - freqtrade
+    - helm-chart
+    - kubernetes
+    - helm
+    - crypto-trading
+    - trading-bot
+    - gitops
+    - frequi
+
