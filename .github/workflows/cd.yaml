@@ -73,7 +73,7 @@ jobs:
         run: cr package .
 
       - name: Upload chart release assets
-        run: cr upload --owner otwld --git-repo freqtrade-helm-chart --generate-release-notes -c "$(git rev-parse HEAD)"
+        run: cr upload --owner otwld --git-repo freqtrade-helm-chart --generate-release-notes --skip-existing -c "$(git rev-parse HEAD)"
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
