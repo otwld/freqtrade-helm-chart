@@ -2,10 +2,10 @@
 
 ## Navigation
 
-- [Home](Home.md)
-- [Installation and Upgrades](Installation-and-Upgrades.md)
-- [Examples](Examples.md)
-- [Troubleshooting](Troubleshooting.md)
+- [Home](home.md)
+- [Installation and Upgrades](installation_and_upgrades.md)
+- [Examples](examples.md)
+- [Troubleshooting](troubleshooting.md)
 
 ## Local install
 
@@ -129,6 +129,6 @@ Official upstream docs:
 
 ## Related docs
 
-- [Architecture](Architecture.md)
-- [Examples](Examples.md)
-- [Troubleshooting](Troubleshooting.md)
+- [Architecture](architecture.md)
+- [Examples](examples.md)
+- [Troubleshooting](troubleshooting.md)

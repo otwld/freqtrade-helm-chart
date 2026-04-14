@@ -2,10 +2,10 @@
 
 ## Navigation
 
-- [Home](Home.md)
-- [Examples](Examples.md)
-- [Operations](Operations.md)
-- [Releases and CI](Releases-and-CI.md)
+- [Home](home.md)
+- [Examples](examples.md)
+- [Operations](operations.md)
+- [Releases and CI](releases_and_ci.md)
 
 ## Install
 
@@ -58,4 +58,4 @@ helm upgrade --install freqtrade . \
 - Keep one values file per environment under version control
 - Run `helm template` before upgrades that change bots, data jobs, or ingress
 - Use `helm history` and `helm rollback` if a rollout fails cleanly
-- Use the recovery runbook in [Operations](Operations.md) if Helm metadata is unhealthy
+- Use the recovery runbook in [Operations](operations.md) if Helm metadata is unhealthy

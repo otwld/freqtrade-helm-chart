@@ -2,10 +2,10 @@
 
 ## Navigation
 
-- [Home](Home.md)
-- [Examples](Examples.md)
-- [Operations](Operations.md)
-- [Troubleshooting](Troubleshooting.md)
+- [Home](home.md)
+- [Examples](examples.md)
+- [Operations](operations.md)
+- [Troubleshooting](troubleshooting.md)
 
 ## Fleet model
 
@@ -85,4 +85,4 @@ The chart uses `StatefulSet` everywhere for long-running workloads because Freqt
 - Private access or strongly protected ingress is preferred for bots
 - Bots default API CORS from `dashboard.ingress.host` when `api.corsOrigins` is left empty. The chart emits both `https://<dashboard host>` and `http://<dashboard host>` to handle common ingress and TLS-termination patterns.
 
-See [Operations](Operations.md) and [Troubleshooting](Troubleshooting.md) for operational guidance.
+See [Operations](operations.md) and [Troubleshooting](troubleshooting.md) for operational guidance.

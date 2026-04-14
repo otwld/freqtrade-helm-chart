@@ -2,9 +2,9 @@
 
 ## Navigation
 
-- [Home](Home.md)
-- [Installation and Upgrades](Installation-and-Upgrades.md)
-- [Operations](Operations.md)
+- [Home](home.md)
+- [Installation and Upgrades](installation_and_upgrades.md)
+- [Operations](operations.md)
 
 ## Workflow overview
 

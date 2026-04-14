@@ -2,9 +2,9 @@
 
 ## Navigation
 
-- [Home](Home.md)
-- [Installation and Upgrades](Installation-and-Upgrades.md)
-- [Operations](Operations.md)
+- [Home](home.md)
+- [Installation and Upgrades](installation_and_upgrades.md)
+- [Operations](operations.md)
 
 ## Pod starts then exits immediately
 
@@ -73,4 +73,4 @@ Symptoms:
 - `helm status` shows `superseded`
 - `helm history` contains a failed or pending upgrade with no deployed revision
 
-Use the recovery runbook in [Operations](Operations.md).
+Use the recovery runbook in [Operations](operations.md).

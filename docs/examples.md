@@ -2,9 +2,9 @@
 
 ## Navigation
 
-- [Home](Home.md)
-- [Installation and Upgrades](Installation-and-Upgrades.md)
-- [Operations](Operations.md)
+- [Home](home.md)
+- [Installation and Upgrades](installation_and_upgrades.md)
+- [Operations](operations.md)
 
 ## Overview
 
@@ -39,4 +39,4 @@ helm lint . -f examples/minimal.yaml
 helm template test . -f examples/minimal.yaml
 ```
 
-See [Installation and Upgrades](Installation-and-Upgrades.md) for install and upgrade commands.
+See [Installation and Upgrades](installation_and_upgrades.md) for install and upgrade commands.

@@ -13,13 +13,13 @@ fi
 
 mkdir -p "$TARGET_DIR"
 
-cp "$SOURCE_DIR/Home.md" "$TARGET_DIR/Home.md"
-cp "$SOURCE_DIR/Architecture.md" "$TARGET_DIR/Architecture.md"
-cp "$SOURCE_DIR/Installation-and-Upgrades.md" "$TARGET_DIR/Installation-and-Upgrades.md"
-cp "$SOURCE_DIR/Examples.md" "$TARGET_DIR/Examples.md"
-cp "$SOURCE_DIR/Operations.md" "$TARGET_DIR/Operations.md"
-cp "$SOURCE_DIR/Releases-and-CI.md" "$TARGET_DIR/Releases-and-CI.md"
-cp "$SOURCE_DIR/Troubleshooting.md" "$TARGET_DIR/Troubleshooting.md"
-cp "$SOURCE_DIR/_Sidebar.md" "$TARGET_DIR/_Sidebar.md"
+cp "$SOURCE_DIR/home.md" "$TARGET_DIR/Home.md"
+cp "$SOURCE_DIR/architecture.md" "$TARGET_DIR/Architecture.md"
+cp "$SOURCE_DIR/installation_and_upgrades.md" "$TARGET_DIR/Installation-and-Upgrades.md"
+cp "$SOURCE_DIR/examples.md" "$TARGET_DIR/Examples.md"
+cp "$SOURCE_DIR/operations.md" "$TARGET_DIR/Operations.md"
+cp "$SOURCE_DIR/releases_and_ci.md" "$TARGET_DIR/Releases-and-CI.md"
+cp "$SOURCE_DIR/troubleshooting.md" "$TARGET_DIR/Troubleshooting.md"
+cp "$SOURCE_DIR/_sidebar.md" "$TARGET_DIR/_Sidebar.md"
 
 echo "Exported wiki pages to $TARGET_DIR"

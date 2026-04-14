@@ -9,6 +9,8 @@
 
 Production-grade Helm chart for running Freqtrade dashboards and multi-bot fleets on Kubernetes.
 
+![Freqtrade Helm chart example deployment](./example.png)
+
 ## Why this chart
 
 - Fleet-oriented model built around `dashboard` and `bots[]`
@@ -68,13 +70,13 @@ helm upgrade --install freqtrade . \
 
 ## Operator docs
 
-- [Home](docs/Home.md)
-- [Architecture](docs/Architecture.md)
-- [Installation and Upgrades](docs/Installation-and-Upgrades.md)
-- [Examples](docs/Examples.md)
-- [Operations](docs/Operations.md)
-- [Releases and CI](docs/Releases-and-CI.md)
-- [Troubleshooting](docs/Troubleshooting.md)
+- [Home](docs/home.md)
+- [Architecture](docs/architecture.md)
+- [Installation and Upgrades](docs/installation_and_upgrades.md)
+- [Examples](docs/examples.md)
+- [Operations](docs/operations.md)
+- [Releases and CI](docs/releases_and_ci.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
 To export the handbook into a checked-out GitHub wiki repository:
 

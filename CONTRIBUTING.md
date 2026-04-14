@@ -24,4 +24,4 @@ helm package . --destination /tmp
 
 - Bump `Chart.yaml` intentionally
 - Keep examples renderable
-- Use the guidance in [`docs/Releases-and-CI.md`](docs/Releases-and-CI.md)
+- Use the guidance in [`docs/releases_and_ci.md`](docs/releases_and_ci.md)

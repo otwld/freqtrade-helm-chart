@@ -2,12 +2,12 @@
 
 ## Navigation
 
-- [Architecture](Architecture.md)
-- [Installation and Upgrades](Installation-and-Upgrades.md)
-- [Examples](Examples.md)
-- [Operations](Operations.md)
-- [Releases and CI](Releases-and-CI.md)
-- [Troubleshooting](Troubleshooting.md)
+- [Architecture](architecture.md)
+- [Installation and Upgrades](installation_and_upgrades.md)
+- [Examples](examples.md)
+- [Operations](operations.md)
+- [Releases and CI](releases_and_ci.md)
+- [Troubleshooting](troubleshooting.md)
 - [Generated Values Reference](../README.md#values)
 
 ## What this chart is for
@@ -32,8 +32,8 @@ The generated values reference stays in [README.md](../README.md#values) so it c
 
 ## Recommended reading order
 
-1. [Architecture](Architecture.md)
-2. [Examples](Examples.md)
-3. [Installation and Upgrades](Installation-and-Upgrades.md)
-4. [Operations](Operations.md)
-5. [Troubleshooting](Troubleshooting.md)
+1. [Architecture](architecture.md)
+2. [Examples](examples.md)
+3. [Installation and Upgrades](installation_and_upgrades.md)
+4. [Operations](operations.md)
+5. [Troubleshooting](troubleshooting.md)
