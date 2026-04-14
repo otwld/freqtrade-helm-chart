@@ -10,6 +10,17 @@
 ## Install
 
 ```bash
+helm repo add otwld https://helm.otwld.com/
+helm repo update
+helm upgrade --install freqtrade otwld/freqtrade \
+  --namespace freqtrade \
+  --create-namespace \
+  -f values.yaml
+```
+
+## Local development install
+
+```bash
 helm upgrade --install freqtrade . \
   --namespace freqtrade \
   --create-namespace \
@@ -27,6 +38,15 @@ helm template freqtrade . -f examples/values-freqtrade-v2.yaml >/tmp/freqtrade-r
 ```
 
 Upgrade:
+
+```bash
+helm repo update
+helm upgrade --install freqtrade otwld/freqtrade \
+  --namespace freqtrade \
+  -f values.yaml
+```
+
+For local chart testing:
 
 ```bash
 helm upgrade --install freqtrade . \

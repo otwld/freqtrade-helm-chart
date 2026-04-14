@@ -3,8 +3,8 @@
 # Freqtrade Helm Chart
 
 ![GitHub License](https://img.shields.io/github/license/otwld/freqtrade-helm-chart)
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/freqtrade-helm-chart)](https://artifacthub.io/packages/helm/ollama-helm/ollama)
 [![Helm Lint and Test](https://github.com/otwld/freqtrade-helm-chart/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/otwld/freqtrade-helm-chart/actions/workflows/ci.yaml)
+[![Publish Chart](https://github.com/otwld/freqtrade-helm-chart/actions/workflows/cd.yaml/badge.svg?branch=main)](https://github.com/otwld/freqtrade-helm-chart/actions/workflows/cd.yaml)
 [![Discord](https://img.shields.io/badge/Discord-OTWLD-blue?logo=discord&logoColor=white)](https://discord.gg/U24mpqTynB)
 
 Production-grade Helm chart for running Freqtrade dashboards and multi-bot fleets on Kubernetes.
@@ -19,7 +19,18 @@ Production-grade Helm chart for running Freqtrade dashboards and multi-bot fleet
 - Bot-level Telegram support aligned with the official Freqtrade configuration model
 - Render-time validation for common Freqtrade configuration mistakes
 
-## Quick Start
+## Install From OTWLD Helm Repo
+
+```bash
+helm repo add otwld https://helm.otwld.com/
+helm repo update
+helm upgrade --install freqtrade otwld/freqtrade \
+  --namespace freqtrade \
+  --create-namespace \
+  -f values.yaml
+```
+
+## Local Development Quick Start
 
 ```bash
 helm lint .
@@ -75,6 +86,7 @@ Top-level values are intentionally small:
 - `./scripts/lint-examples.sh .` validates the chart and every shipped example
 - `.github/workflows/ci.yaml` enforces docs freshness and packages the chart on every PR and `main` push
 - `.github/workflows/release-readiness.yaml` validates tagged builds and uploads the packaged chart artifact
+- `.github/workflows/cd.yaml` publishes tagged releases to GitHub releases and mirrors the chart sources into the central `helm-charts` repository used by `https://helm.otwld.com/`
 
 ## Telegram
 
@@ -299,8 +311,6 @@ Notes:
 
 ## Support
 
-- For questions, suggestions, and discussion about Ollama please refer to
-  the [Ollama issue page](https://github.com/ollama/ollama/issues)
 - For questions, suggestions, and discussion about this chart please
-  visit [Ollama-Helm issue page](https://github.com/otwld/ollama-helm/issues) or join
+  visit [Freqtrade-Helm issue page](https://github.com/otwld/freqtrade-helm-chart/issues) or join
   our [OTWLD Discord](https://discord.gg/U24mpqTynB)

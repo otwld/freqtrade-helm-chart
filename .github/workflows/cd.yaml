@@ -1,0 +1,95 @@
+name: Publish Chart
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish chart to releases and helm.otwld.com
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Generate docs
+        run: ./scripts/generate-docs.sh
+
+      - name: Verify generated docs are committed
+        run: git diff --exit-code -- README.md
+
+      - name: Validate chart metadata
+        run: |
+          test -n "$(sed -n 's/^version: //p' Chart.yaml)"
+          test -n "$(sed -n 's/^appVersion: //p' Chart.yaml)"
+
+      - name: Validate tag matches Chart version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          chart_version="$(awk '/^version:/ { print $2 }' Chart.yaml)"
+          tag_name="${GITHUB_REF_NAME#v}"
+          test "$chart_version" = "$tag_name"
+
+      - name: Lint chart and examples
+        run: ./scripts/lint-examples.sh .
+
+      - name: Install chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          install_only: true
+
+      - name: Prepare release directories
+        run: |
+          rm -rf .cr-release-packages .cr-index .freqtrade-helm
+          mkdir -p .cr-release-packages .cr-index .freqtrade-helm
+
+      - name: Copy publishable chart sources
+        run: |
+          cp -r templates .freqtrade-helm/
+          cp Chart.yaml .freqtrade-helm/
+          cp LICENSE .freqtrade-helm/
+          cp README.md .freqtrade-helm/
+          cp values.yaml .freqtrade-helm/
+          cp values.schema.json .freqtrade-helm/
+          cp .helmignore .freqtrade-helm/
+
+      - name: Package chart
+        run: cr package .
+
+      - name: Upload chart release assets
+        run: cr upload --owner otwld --git-repo freqtrade-helm-chart --generate-release-notes -c "$(git rev-parse HEAD)"
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Update chart index
+        run: cr index --owner otwld --git-repo freqtrade-helm-chart --push
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Mirror chart into central helm-charts repo
+        uses: cpina/github-action-push-to-another-repository@v1.7.2
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.HELM_CHARTS_REPO_TOKEN }}
+        with:
+          source-directory: ".freqtrade-helm/"
+          target-directory: "charts/freqtrade"
+          destination-github-username: ${{ github.repository_owner }}
+          destination-repository-name: "helm-charts"
+          user-email: "$GITHUB_ACTOR@users.noreply.github.com"
+          target-branch: main

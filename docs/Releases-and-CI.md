@@ -23,8 +23,20 @@ The repository ships two GitHub Actions workflows:
   - validates tag-to-chart version alignment
   - lints and renders examples
   - packages the chart and uploads the archive as an artifact
+- `Publish Chart`
+  - runs on version tags and manual dispatch
+  - reruns validation and packaging
+  - publishes release assets with `chart-releaser`
+  - updates the repository chart index
+  - mirrors the chart sources into the central `helm-charts` repository used by `https://helm.otwld.com/`
 
-Current default: the repo validates and packages the chart, but does not automatically publish releases to GHCR or GitHub Pages.
+The published install path for consumers is:
+
+```bash
+helm repo add otwld https://helm.otwld.com/
+helm repo update
+helm upgrade --install freqtrade otwld/freqtrade --namespace freqtrade --create-namespace
+```
 
 ## Maintainer workflow
 
@@ -42,7 +54,18 @@ Before tagging a release:
 1. Update `Chart.yaml` version intentionally.
 2. Re-run local validation.
 3. Confirm examples still reflect the supported values model.
-4. Push the tag and inspect the `Release Readiness` artifact.
+4. Push the tag.
+5. Inspect both `Release Readiness` and `Publish Chart`.
+6. Confirm the chart is available from `https://helm.otwld.com/`.
+
+## Release prerequisites
+
+The publish workflow expects:
+
+- `GITHUB_TOKEN` with release/index permissions in this repository
+- `HELM_CHARTS_REPO_TOKEN` with push access to `otwld/helm-charts`
+
+The central mirror writes this chart to `charts/freqtrade` in the `helm-charts` repository.
 
 ## Repository metadata
 
