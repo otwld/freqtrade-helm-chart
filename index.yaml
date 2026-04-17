@@ -3,6 +3,34 @@ entries:
   freqtrade:
   - apiVersion: v2
     appVersion: stable
+    created: "2026-04-17T06:07:53.894225327Z"
+    description: Production-grade Helm chart for running Freqtrade dashboards and
+      multi-bot fleets on Kubernetes
+    digest: c2583aa15dbae8532824a7e422c1a846943677597d07cbd3a46bd9cbad8152f1
+    home: https://github.com/otwld/freqtrade-helm-chart
+    keywords:
+    - freqtrade
+    - helm-chart
+    - crypto
+    - trading
+    - bot
+    - kubernetes
+    - helm
+    - gitops
+    - frequi
+    maintainers:
+    - name: OTWLD
+      url: https://github.com/otwld/freqtrade-helm-chart
+    name: freqtrade
+    sources:
+    - https://github.com/otwld/freqtrade-helm-chart
+    - https://github.com/freqtrade/freqtrade
+    type: application
+    urls:
+    - https://github.com/otwld/freqtrade-helm-chart/releases/download/freqtrade-0.3.3/freqtrade-0.3.3.tgz
+    version: 0.3.3
+  - apiVersion: v2
+    appVersion: stable
     created: "2026-04-14T14:47:03.140149822Z"
     description: Production-grade Helm chart for running Freqtrade dashboards and
       multi-bot fleets on Kubernetes
@@ -29,4 +57,4 @@ entries:
     urls:
     - https://github.com/otwld/freqtrade-helm-chart/releases/download/freqtrade-0.3.2/freqtrade-0.3.2.tgz
     version: 0.3.2
-generated: "2026-04-14T14:47:03.140158318Z"
+generated: "2026-04-17T06:07:53.894235452Z"
