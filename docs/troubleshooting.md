@@ -29,10 +29,19 @@ Common causes:
 - bot API is not reachable from the browser
 - bot `api.corsOrigins` does not match the dashboard origin
 - wrong username/password stored in the UI
+- stale browser state in FreqUI local storage
 
 For local access, use [`scripts/bot-access.sh`](../scripts/bot-access.sh).
 
 If `api.corsOrigins` is empty, the chart only defaults bot CORS from `dashboard.ingress.host` when the dashboard ingress is enabled and has a host.
+
+If the dashboard UI throws repeated `botState`, `botFeatures`, `stakeCurrencyDecimals`, or `detailTradeId` errors in the browser console, clear the stored FreqUI login and selected bot state for the dashboard origin:
+
+```js
+localStorage.removeItem('ftSelectedBot');
+localStorage.removeItem('ftAuthLoginInfo');
+location.reload();
+```
 
 ## UI shows bots online but no trades happen
 

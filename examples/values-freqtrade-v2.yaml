@@ -173,6 +173,14 @@ bots:
         amend_last_stake_amount: true
         use_exit_signal: true
         exit_profit_only: true
+        # The upstream Babico strategy disables ROI and almost disables stoploss.
+        # Override both so the bot can realize profit and cut losing trades.
+        minimal_roi:
+          "0": 0.08
+          "4320": 0.05
+          "10080": 0.03
+          "20160": 0.015
+        stoploss: -0.15
         exchange:
           name: binance
           key: ""
@@ -258,24 +266,17 @@ bots:
           ccxt_config: {}
           ccxt_async_config: {}
           pair_whitelist:
-            - BTC/USDT
-            - BCH/USDT
-            - ETH/USDT
-            - LINK/USDT
-            - LTC/USDT
-            - SOL/USDT
-            - BNB/USDT
-            - XRP/USDT
-            - ADA/USDT
-            - DOT/USDT
-            - ETC/USDT
-            - ALGO/USDT
-            - LUNA/USDT
+            - ".*/USDT"
+            - ".*/USDC"
           pair_blacklist:
-            - .*(BULL|BEAR|UP|DOWN)/USDT
+            - ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
         pairlists:
-          - method: StaticPairList
-        dry_run_wallet: 100
+          # NFI strategies recommend a broader 40-80 asset volume-based universe.
+          - method: VolumePairList
+            number_assets: 50
+            sort_key: quoteVolume
+            refresh_period: 1800
+        dry_run_wallet: 1000
         db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
@@ -336,24 +337,16 @@ bots:
           ccxt_config: {}
           ccxt_async_config: {}
           pair_whitelist:
-            - BTC/USDT
-            - BCH/USDT
-            - ETH/USDT
-            - LINK/USDT
-            - LTC/USDT
-            - SOL/USDT
-            - BNB/USDT
-            - XRP/USDT
-            - ADA/USDT
-            - DOT/USDT
-            - ETC/USDT
-            - ALGO/USDT
-            - LUNA/USDT
+            - ".*/USDT"
+            - ".*/USDC"
           pair_blacklist:
-            - .*(BULL|BEAR|UP|DOWN)/USDT
+            - ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
         pairlists:
-          - method: StaticPairList
-        dry_run_wallet: 100
+          - method: VolumePairList
+            number_assets: 50
+            sort_key: quoteVolume
+            refresh_period: 1800
+        dry_run_wallet: 1000
         db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
@@ -414,24 +407,16 @@ bots:
           ccxt_config: {}
           ccxt_async_config: {}
           pair_whitelist:
-            - BTC/USDT
-            - BCH/USDT
-            - ETH/USDT
-            - LINK/USDT
-            - LTC/USDT
-            - SOL/USDT
-            - BNB/USDT
-            - XRP/USDT
-            - ADA/USDT
-            - DOT/USDT
-            - ETC/USDT
-            - ALGO/USDT
-            - LUNA/USDT
+            - ".*/USDT"
+            - ".*/USDC"
           pair_blacklist:
-            - .*(BULL|BEAR|UP|DOWN)/USDT
+            - ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
         pairlists:
-          - method: StaticPairList
-        dry_run_wallet: 100
+          - method: VolumePairList
+            number_assets: 50
+            sort_key: quoteVolume
+            refresh_period: 1800
+        dry_run_wallet: 1000
         db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
@@ -492,24 +477,16 @@ bots:
           ccxt_config: {}
           ccxt_async_config: {}
           pair_whitelist:
-            - BTC/USDT
-            - BCH/USDT
-            - ETH/USDT
-            - LINK/USDT
-            - LTC/USDT
-            - SOL/USDT
-            - BNB/USDT
-            - XRP/USDT
-            - ADA/USDT
-            - DOT/USDT
-            - ETC/USDT
-            - ALGO/USDT
-            - LUNA/USDT
+            - ".*/USDT"
+            - ".*/USDC"
           pair_blacklist:
-            - .*(BULL|BEAR|UP|DOWN)/USDT
+            - ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
         pairlists:
-          - method: StaticPairList
-        dry_run_wallet: 100
+          - method: VolumePairList
+            number_assets: 50
+            sort_key: quoteVolume
+            refresh_period: 1800
+        dry_run_wallet: 1000
         db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
@@ -570,24 +547,16 @@ bots:
           ccxt_config: {}
           ccxt_async_config: {}
           pair_whitelist:
-            - BTC/USDT
-            - BCH/USDT
-            - ETH/USDT
-            - LINK/USDT
-            - LTC/USDT
-            - SOL/USDT
-            - BNB/USDT
-            - XRP/USDT
-            - ADA/USDT
-            - DOT/USDT
-            - ETC/USDT
-            - ALGO/USDT
-            - LUNA/USDT
+            - ".*/USDT"
+            - ".*/USDC"
           pair_blacklist:
-            - .*(BULL|BEAR|UP|DOWN)/USDT
+            - ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
         pairlists:
-          - method: StaticPairList
-        dry_run_wallet: 100
+          - method: VolumePairList
+            number_assets: 50
+            sort_key: quoteVolume
+            refresh_period: 1800
+        dry_run_wallet: 1000
         db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
@@ -648,24 +617,16 @@ bots:
           ccxt_config: {}
           ccxt_async_config: {}
           pair_whitelist:
-            - BTC/USDT
-            - BCH/USDT
-            - ETH/USDT
-            - LINK/USDT
-            - LTC/USDT
-            - SOL/USDT
-            - BNB/USDT
-            - XRP/USDT
-            - ADA/USDT
-            - DOT/USDT
-            - ETC/USDT
-            - ALGO/USDT
-            - LUNA/USDT
+            - ".*/USDT"
+            - ".*/USDC"
           pair_blacklist:
-            - .*(BULL|BEAR|UP|DOWN)/USDT
+            - ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
         pairlists:
-          - method: StaticPairList
-        dry_run_wallet: 100
+          - method: VolumePairList
+            number_assets: 50
+            sort_key: quoteVolume
+            refresh_period: 1800
+        dry_run_wallet: 1000
         db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
@@ -726,24 +687,16 @@ bots:
           ccxt_config: {}
           ccxt_async_config: {}
           pair_whitelist:
-            - BTC/USDT
-            - BCH/USDT
-            - ETH/USDT
-            - LINK/USDT
-            - LTC/USDT
-            - SOL/USDT
-            - BNB/USDT
-            - XRP/USDT
-            - ADA/USDT
-            - DOT/USDT
-            - ETC/USDT
-            - ALGO/USDT
-            - LUNA/USDT
+            - ".*/USDT"
+            - ".*/USDC"
           pair_blacklist:
-            - .*(BULL|BEAR|UP|DOWN)/USDT
+            - ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
         pairlists:
-          - method: StaticPairList
-        dry_run_wallet: 100
+          - method: VolumePairList
+            number_assets: 50
+            sort_key: quoteVolume
+            refresh_period: 1800
+        dry_run_wallet: 1000
         db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
