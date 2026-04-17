@@ -12,7 +12,7 @@ dashboard:
   ingress:
     enabled: true
     className: traefik
-    host: dashboard.freqtrade-v2.local
+    host: dashboard-freqtrade.otwld.lan
   config:
     public:
       timeframe: 15m
@@ -29,7 +29,8 @@ dashboard:
         pair_whitelist:
           - BTC/USDT
           - ETH/USDT
-        pair_blacklist: []
+        pair_blacklist:
+          - .*(BULL|BEAR|UP|DOWN)/USDT
       pairlists:
         - method: StaticPairList
     secret:
@@ -44,9 +45,22 @@ dashboard:
       enabled: true
       pairs:
         - BTC/USDT
+        - BCH/USDT
         - ETH/USDT
+        - LINK/USDT
+        - LTC/USDT
+        - SOL/USDT
+        - BNB/USDT
+        - XRP/USDT
+        - ADA/USDT
+        - DOT/USDT
+        - ETC/USDT
+        - ALGO/USDT
+        - LUNA/USDT
       timeframes:
+        - 5m
         - 15m
+        - 1d
 
 bots:
   - name: ichi
@@ -71,7 +85,7 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: ichi.freqtrade-v2.local
+      host: ichi-freqtrade.otwld.lan
     api:
       enabled: true
     config:
@@ -102,10 +116,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 5
         entry_pricing:
           price_side: same
@@ -144,17 +160,19 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: babico.freqtrade-v2.local
+      host: babico-freqtrade.otwld.lan
     api:
       enabled: true
     config:
       public:
-        timeframe: 15m
+        timeframe: 1d
         tradable_balance_ratio: 0.99
         fiat_display_currency: USD
         stake_amount: unlimited
         stake_currency: USDT
         amend_last_stake_amount: true
+        use_exit_signal: true
+        exit_profit_only: true
         exchange:
           name: binance
           key: ""
@@ -175,10 +193,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 5
         entry_pricing:
           price_side: same
@@ -217,7 +237,7 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: nfi-x.freqtrade-v2.local
+      host: nfi-x-freqtrade.otwld.lan
     api:
       enabled: true
     config:
@@ -251,10 +271,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
           price_side: same
@@ -293,7 +315,7 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: nfi-x2.freqtrade-v2.local
+      host: nfi-x2-freqtrade.otwld.lan
     api:
       enabled: true
     config:
@@ -327,10 +349,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
           price_side: same
@@ -369,7 +393,7 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: nfi-x3.freqtrade-v2.local
+      host: nfi-x3-freqtrade.otwld.lan
     api:
       enabled: true
     config:
@@ -403,10 +427,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
           price_side: same
@@ -445,7 +471,7 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: nfi-x4.freqtrade-v2.local
+      host: nfi-x4-freqtrade.otwld.lan
     api:
       enabled: true
     config:
@@ -479,10 +505,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
           price_side: same
@@ -521,7 +549,7 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: nfi-x5.freqtrade-v2.local
+      host: nfi-x5-freqtrade.otwld.lan
     api:
       enabled: true
     config:
@@ -555,10 +583,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
           price_side: same
@@ -597,7 +627,7 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: nfi-x6.freqtrade-v2.local
+      host: nfi-x6-freqtrade.otwld.lan
     api:
       enabled: true
     config:
@@ -631,10 +661,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
           price_side: same
@@ -673,7 +705,7 @@ bots:
     ingress:
       enabled: true
       className: traefik
-      host: nfi-x7.freqtrade-v2.local
+      host: nfi-x7-freqtrade.otwld.lan
     api:
       enabled: true
     config:
@@ -707,10 +739,12 @@ bots:
             - ETC/USDT
             - ALGO/USDT
             - LUNA/USDT
-          pair_blacklist: []
+          pair_blacklist:
+            - .*(BULL|BEAR|UP|DOWN)/USDT
         pairlists:
           - method: StaticPairList
         dry_run_wallet: 100
+        db_url: sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite
         max_open_trades: 6
         entry_pricing:
           price_side: same
